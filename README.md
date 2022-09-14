@@ -16,4 +16,4 @@ Null Hypothesis: there is a significant difference between NL-KV / KV-NL sequenc
 Alternative Hypothesis: there is no significant difference between NL-KV / KV-NL sequences --> this means there is NO carry over effect (use both periods)  
 p-value > 0.05 shows possible carry-over effect is not significantly different between NL-KV / KV-NL sequences  
 
-My first interpretation would be that there seems to be no carry-over effect.
+Interpretation from plot and t-tests would be that there seems to be a period effect, no carry-over or sequence effect as treatment duration differences are not significantly different for both periods.
