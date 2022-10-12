@@ -202,3 +202,11 @@ design.rank.pretest <- ANOVA_design(design = "2w",
 
 plot_power(design.rank.pretest, max_n = 100, desired_power = 80)
 plot_power(design.rank.pretest, max_n = 100, desired_power = 90)
+
+### REFERENCES ####
+
+# Adam Funk, Valentin Tablan, Kalina Bontcheva, Hamish Cunningham, Brian Davis, and Siegfried Handschuh. Clone: Controlled language for ontology edit- ing. In Karl Aberer et al., editors, The Semantic Web, volume 4825 of Lecture Notes in Computer Science, pages 142–155, Berlin, Heidelberg, 2007. Springer Berlin Heidelberg.
+# Jim Lewis and Jeff Sauro. Sample Sizes for Comparing SUS Scores – MeasuringU. https://measuringu.com/sample-sizes-for-sus-comparisons/, April 2022. Accessed 2022-10-11.
+# Katharina Juhnke. Improving the Quality of Automotive Test Case Specifications. Dissertation, Ulm University, Ulm, August 2020.
+# Arne N. Johanson and Wilhelm Hasselbring. Effectiveness and efficiency of a domain-specific language for high-performance marine ecosystem simulation: a con- trolled experiment. Empirical Software Engineering, 22(4):2206–2236, August 2017.
+# Bernhard Hoisl, Stefan Sobernig, and Mark Strembeck. Comparing Three Notations for Defining Scenario-based Model Tests: A Controlled Experiment. In Proceedings of the 9th International Conference on the Quality of Information and Communi- cations Technology, pages 95–104, Guimaraes, Portugal, 2014. IEEE.
