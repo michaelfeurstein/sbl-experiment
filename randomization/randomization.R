@@ -1,4 +1,3 @@
-library(tidyverse)
 library(blockrand)
 
 # first batch of participants n = 48 (power = 80%)
