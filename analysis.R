@@ -2,6 +2,7 @@ library(dplyr)
 library(ggplot2)
 library(ggpubr)
 library(lme4)
+library(lmerTest)
 library(simr)
 library(pwr)
 library(effectsize)
@@ -134,6 +135,54 @@ shapiro.test(df$accuracy[df$notation.r == "key-value"])
 
 boxplot(sus ~ notation.r, data = df, xlab = "Notation", ylab = "SUS score", names = c("1" = "NL", "2" = "KV"))
 boxplot(accuracy ~ notation.r, data = df, xlab = "Notation", ylab = "Accuracy", names = c("1" = "NL", "2" = "KV"))
+
+### TRANSFORMATION ####
+#### duration ####
+# see above / duration is log transformed
+
+#### accuracy ####
+# I need help transforming accuracy
+
+#### sus ####
+# natural-langauge sus transformation
+# step 1 the actual sus scores are not normal 
+nl_sus<-df$sus[df$notation.r == "natural language"]
+hist(nl_sus)
+# using a box cox transformation
+library(MASS)
+# exploring different lambdas for best fit
+bc1<-boxcox(nl_sus~1,lambda=seq(-2,4,0.01))
+# from bc1 plot we can say that possibly 2 fits well also in terms of not too complex transformation such as 2.3
+
+# transformation with actual formula
+nl_sus_t<-(nl_sus^3.2-1)/3.2
+# two plots showing the same yt in different ways
+plot(density(nl_sus_t))
+hist(nl_sus_t)
+
+shapiro.test(nl_sus_t)
+shapiro.test(nl_sus)
+
+# key-value sus transformation
+kv_sus<-df$sus[df$notation.r == "key-value"]
+hist(kv_sus)
+# using a box cox transformation
+library(MASS)
+# exploring different lambdas for best fit
+bc1<-boxcox(kv_sus~1,lambda=seq(-2,4,0.01))
+# from bc1 plot we can say that possibly 2 fits well also in terms of not too complex transformation such as 2.3
+
+# transformation with actual formula
+kv_sus_t<-(kv_sus^3.2-1)/3.2
+# two plots showing the same yt in different ways
+plot(density(kv_sus_t))
+hist(kv_sus_t)
+
+shapiro.test(kv_sus_t)
+shapiro.test(kv_sus)
+
+# persist transformed sus into dataframe
+df$sust<-(df$sus^3.2-1)/3.2
 
 ### CROSS-OVER ANALYSIS ####
 # Testing carry-over and treatment effect with t-tests
@@ -339,8 +388,18 @@ t.test(mean_accuracy ~ notation.r, data = np)
 # time spent on solving the coding task (creation of video-based learning module)
 
 ##### boxplot ####
-boxplot(duration.log ~ notation.r, data = df, xlab = "Notation", ylab = "Duration", names = c("1" = "NL", "2" = "KV"))
 boxplot(duration.r ~ notation.r, data = df, xlab = "Notation", ylab = "Duration", names = c("1" = "NL", "2" = "KV"))
+boxplot(duration.log ~ notation.r, data = df, xlab = "Notation", ylab = "Duration", names = c("1" = "NL", "2" = "KV"))
+
+##### histogram ####
+hist(df$duration.r[df$notation.r == "natural language"])
+hist(df$duration.log[df$notation.r == "natural language"])
+
+hist(df$duration.r[df$notation.r == "key-value"])
+hist(df$duration.log[df$notation.r == "key-value"])
+
+##### interaction plot ####
+interaction.plot(factor(df$period),df$notation,df$duration.r)
 
 ##### mean ####
 df %>%
@@ -373,6 +432,16 @@ wilcox.test(df$duration.log[df$notation.r == "natural language"],df$duration.log
 
 ##### effect size ####
 cohens_d(df$duration.log[df$notation.r == "natural language"],df$duration.log[df$notation.r == "key-value"], paired = TRUE)
+
+##### linear regression ####
+m4<-lmer(duration.log~notation.r+factor(period)+(1|subject),data=df)
+anova(m4)
+summary(m4)
+
+qqnorm(df$duration.log, pch = 1, frame = FALSE)
+qqline(df$duration.log, col = "steelblue", lwd = 2)
+plot(df$duration.log, resid(m4))
+abline(0, 0) 
 
 #### ACCURACY  ####
 # correctness of result from coding task (creation of video-based learning module)
@@ -417,6 +486,17 @@ cohens_d(df$accuracy[df$notation.r == "natural language"],df$accuracy[df$notatio
 
 ##### boxplot ####
 boxplot(sus ~ notation.r, data = df, xlab = "Notation", ylab = "Accuracy", names = c("1" = "NL", "2" = "KV"))
+boxplot(sust ~ notation.r, data = df, xlab = "Notation", ylab = "Accuracy", names = c("1" = "NL", "2" = "KV"))
+
+##### histogram ####
+hist(df$sus[df$notation.r == "natural language"])
+hist(df$sust[df$notation.r == "natural language"])
+
+hist(df$sus[df$notation.r == "key-value"])
+hist(df$sust[df$notation.r == "key-value"])
+
+##### interaction plot ####
+interaction.plot(factor(df$period),df$notation,df$sus)
 
 ##### mean ####
 df %>%
@@ -442,10 +522,22 @@ shapiro.test(df$sus[df$notation.r == "natural language"])
 shapiro.test(df$sus[df$notation.r == "key-value"])
 
 ##### t-test ####
-t.test(df$sus[df$notation.r == "natural language"],df$sus[df$notation.r == "key-value"], paired = TRUE, conf.level = 0.95)
+# use parametric test with transformed data
+t.test(df$sust[df$notation.r == "natural language"],df$sust[df$notation.r == "key-value"], paired = TRUE, conf.level = 0.95)
 
 ##### wilcoxon ####
+# double check with non-parametric test on regular data
 wilcox.test(df$sus[df$notation.r == "natural language"],df$sus[df$notation.r == "key-value"], paired = TRUE, conf.int=TRUE, conf.level = 0.95)
 
 ##### effect size ####
-cohens_d(df$sus[df$notation.r == "natural language"],df$sus[df$notation.r == "key-value"], paired = TRUE)
+cohens_d(df$sust[df$notation.r == "natural language"],df$sust[df$notation.r == "key-value"], paired = TRUE)
+
+##### linear regression ####
+m_sus<-lmer(sust~notation.r+factor(period)+(1|subject),data=df)
+anova(m_sus)
+summary(m_sus)
+
+qqnorm(df$sust, pch = 1, frame = FALSE)
+qqline(df$sust, col = "steelblue", lwd = 2)
+plot(df$sust, resid(m_sus))
+abline(0, 0) 
