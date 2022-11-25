@@ -6,6 +6,7 @@ library(lmerTest)
 library(simr)
 library(pwr)
 library(effectsize)
+library(MASS)
 
 ### IMPORT DATA  ####
 
@@ -155,11 +156,21 @@ hist(nl_acc)
 # original data is negative skewed (left tail) (also sehr viele werte bei 100 herum) (richtig ?)
 nl_acc_t0<-abs((nl_acc+1)-100)
 hist(nl_acc_t0)
+
+# 1st try
 # starke transformation mit log base 10
 nl_acc_t<-log10(nl_acc_t0)
 plot(density(nl_acc_t))
 hist(nl_acc_t)
 shapiro.test(nl_acc_t)
+
+# 2nd try
+# boxcox transform
+nl_acc_bc<-boxcox(nl_acc~1,lambda=seq(-2,4,0.01))
+nl_acc_bc_t<-(nl_acc^3.2-1)/3.2
+plot(density(nl_acc_bc_t))
+hist(nl_acc_bc_t)
+shapiro.test(nl_acc_bc_t)
 
 #### sus ####
 # natural-langauge sus transformation
@@ -167,7 +178,7 @@ shapiro.test(nl_acc_t)
 nl_sus<-df$sus[df$notation.r == "natural language"]
 hist(nl_sus)
 # using a box cox transformation
-library(MASS)
+
 # exploring different lambdas for best fit
 bc1<-boxcox(nl_sus~1,lambda=seq(-2,4,0.01))
 # from bc1 plot we can say that possibly 2 fits well also in terms of not too complex transformation such as 2.3
