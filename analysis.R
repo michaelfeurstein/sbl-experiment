@@ -142,6 +142,24 @@ boxplot(accuracy ~ notation.r, data = df, xlab = "Notation", ylab = "Accuracy", 
 
 #### accuracy ####
 # I need help transforming accuracy
+nl_acc<-df$accuracy[df$notation.r == "natural language"]
+hist(nl_acc)
+
+# transformation trial and error
+# link on transform based on skew
+# https://anatomisebiostats.com/biostatistics-blog/transforming-skewed-data/
+# link on how to reflect
+# https://www.r-bloggers.com/2020/01/a-guide-to-data-transformation/
+
+# reflect data (add 1 and substract from maximum and use absolute values)
+# original data is negative skewed (left tail) (also sehr viele werte bei 100 herum) (richtig ?)
+nl_acc_t0<-abs((nl_acc+1)-100)
+hist(nl_acc_t0)
+# starke transformation mit log base 10
+nl_acc_t<-log10(nl_acc_t0)
+plot(density(nl_acc_t))
+hist(nl_acc_t)
+shapiro.test(nl_acc_t)
 
 #### sus ####
 # natural-langauge sus transformation
