@@ -1,0 +1,49 @@
+subject;QUALIFICATION;QUALIFICATION[other];DISCIPLINE;OCCUPATION;OCCUPATION[other];PROGRAMMINGyesno;PROGRAMMINGlangs;PROGRAMMINGskill[SQ001];PROGRAMMINGinterest[SQ001];Author;Researcher;User;Tutor;Student;ROLE[other];authorHOWMANYYEARS;authorHOWMANYVIDEOS;researchHOWMANYYEARS;researchHOWMANYPUB;userHOWMANYYEARS;userHOWMANYCOURSES;tutorHOWMANYYEARS;tutorHOWMANYCOURSES;studentHOWMANYYEARS;studentHOWMANYCOURSE
+1;Master;;Education Library and Information Science;Other;Librarian;No;;;high;Yes;No;Yes;No;No;;10;50;;;14;0;;;;
+2;Other;Mag.;Education;Other;Administration staff member;No;;;relatively high;No;No;Yes;Yes;No;;;;;;11;10;11;5;;
+3;PhD;;Social Sciences;(Senior) Lecturer;;Yes;Javascript, Python, PHP, R, C;advancedcan write complex programs;relatively high;Yes;Yes;No;No;No;;15;250;10;0;;;;;;
+4;Master;;Business Informatics;Ph.D. student;;Yes;Java, Python, C#, Javascript, PHP, R ;advancedcan write complex programs;relatively high;No;No;Yes;No;Yes;;;;;;0;0;;;7;15
+5;Master;;BSc: Accounting & Controlling, MSc: Supply Chain Management;Ph.D. student;;Yes;Python, R, SQL, PyTorch ;regularcan write basic programs, no problems reading;very high;Yes;No;No;No;Yes;;1;1;;;;;;;5;10
+6;Master;;Business Education;Researcher;;No;;;relatively low;Yes;No;Yes;No;No;;6;12;;;6;4;;;;
+7;Master;;Business Education;Other;Project employee;Yes;html C#;beginnerproblems writing easy programs, can read;high;Yes;No;Yes;No;No;;3;5;;;1;4;;;;
+8;PhD;;Computer Science, Human-Computer Interaction;Professor;;Yes;Java, Javascript, PHP, Python, R;regularcan write basic programs, no problems reading;relatively low;Yes;Yes;Yes;No;No;;5;50;15;0;15;2;;;;
+9;Master;;Information Systems (Wirtschaftsinformatik);Ph.D. student;;Yes;Python, R, Bash, Tcl, Solidity, Javascript, PHP, Java;advancedcan write complex programs;very high;Yes;No;No;No;Yes;;1;2;;;;;;;7;9
+10;Other;Habil;Business Education;Professor;;No;;;low;Yes;Yes;Yes;No;No;;6;10;2;1;6;15;;;;
+11;Master;;Computer Science;Ph.D. student;;Yes;Python, Java, JS, C#, PHP;regularcan write basic programs, no problems reading;high;Yes;N/A;Yes;Yes;N/A;;2,5;10;;;2,5;4;3;4;;
+12;Other;AHS;Matura;Bachelor student;;Yes;Python, Java, SQL, CSS, HTML,;beginnerproblems writing easy programs, can read;relatively high;Yes;No;No;No;Yes;;5;4;;;;;;;5;10
+13;PhD;;Computer Science ;Post-doc;;Yes;Around 50 languages, logic, functional, and oop Today Julia and Rust, but tach Java;expertyears of experience;very high;Yes;No;No;No;No;;7;40;;;;;;;;
+14;PhD;;Business Administration;(Senior) Lecturer;;Yes;R, Matlab, Gauss, Fortran, Maple;regularcan write basic programs, no problems reading;relatively high;Yes;No;Yes;No;No;;4;30;;;4;20;;;;
+15;PhD;;Communication Sciences;Other;Instructional Designer;Yes;Pascal at school R for research (basic level);beginnerproblems writing easy programs, can read;relatively high;Yes;Yes;Yes;No;No;;5;10;10;3;10;50;;;;
+16;Other;HTL MAtura;IT;Other;Student;No;;;relatively low;Yes;N/A;N/A;N/A;Yes;;4;7;;;;;;;6;2
+17;Master;;Applied linguistics;Other;Scientific coordinator;Yes;C, Java and JavaScript;beginnerproblems writing easy programs, can read;very low;No;No;No;No;No;Never used video-based learning.;;;;;;;;;;
+18;Master;;Electromechanics;(Senior) Lecturer;;No;;;low;Yes;Yes;Yes;No;No;;3;20;3;0;8;10;;;;
+19;Master;;Educational Sciences;Researcher;;No;;;relatively high;No;Yes;No;No;No;;;;3;1;;;;;;
+20;PhD;;Wirtschaftsinformatik / Business Informatics;(Senior) Lecturer;;Yes;Clipper, Visual Basic, C++, Pascal, XOTCL, ooRexx, PHP, HTML;advancedcan write complex programs;high;Yes;No;Yes;No;No;;1;20;;;1;2;;;;
+21;PhD;;Business Informatics;Other;Assistant Professor;Yes;Java, C++, C#, Python, Pearl;regularcan write basic programs, no problems reading;relatively low;Yes;No;Yes;No;No;;2;7;;;5;2;;;;
+22;PhD;;Computer Science;Researcher;;Yes;Java, Python, JavaScript, C#, C++;advancedcan write complex programs;relatively high;No;No;Yes;No;No;;;;;;3;8;;;;
+23;Bachelor;;Medientechnik;Other;Digital Teaching Support employee & Master student;Yes;Javascript, Java, C;beginnerproblems writing easy programs, can read;low;Yes;Yes;Yes;No;Yes;;7;10;1;0;10;2;;;8;5
+24;PhD;;Information Systems;Professor;;Yes;Java, C, C++, Python, Tcl, XoTcl, Javascript, R (and several more);advancedcan write complex programs;very high;Yes;Yes;Yes;No;No;;7;100;7;5;15;15;;;;
+25;PhD;;Electrical Engineering;Professor;;Yes;C, C++, Pascal, Delphi, Java, Python, Matlab;advancedcan write complex programs;very high;Yes;Yes;Yes;No;No;;5;50;5;8;10;10;;;;
+26;PhD;;Business education;(Senior) Lecturer;;No;;;very low;Yes;No;Yes;No;No;;10;15;;;10;50;;;;
+27;Bachelor;;Economics;Master student;;Yes;R;beginnerproblems writing easy programs, can read;relatively low;No;No;No;No;Yes;;;;;;;;;;5;5
+28;Bachelor;;Economics ;Master student;;Yes;R;regularcan write basic programs, no problems reading;relatively low;No;No;No;No;Yes;;;;;;;;;;15;15
+29;Other;Matura;Business and Marketing;Bachelor student;;Yes;Python C# C++ Java Stata SQL VBA PowerQuery(M);regularcan write basic programs, no problems reading;high;No;No;No;No;Yes;;;;;;;;;;4;10
+30;Bachelor;;Economics;Master student;;Yes;R;regularcan write basic programs, no problems reading;relatively high;No;No;Yes;No;Yes;;;;;;4;0;;;7;10
+31;Other;Matura ;In languages ;Other;student ;No;;;relatively low;No;No;Yes;No;No;;;;;;5;1;;;;
+32;Other;Matura;Mathematics and IT;Bachelor student;;Yes;C++, R studio;advancedcan write complex programs;high;No;No;No;Yes;Yes;;;;;;;;0;0;13;17
+33;Bachelor;;Business Information Systems;Master student;;Yes;R, Python;beginnerproblems writing easy programs, can read;relatively high;No;No;No;No;Yes;;;;;;;;;;5;20
+34;Master;;International Shipping and Transport Logistics;Master student;;No;;;high;No;No;No;No;Yes;;;;;;;;;;10;3
+35;Bachelor;;Electrical Engineering;Master student;;Yes;C, C++, Java, HTML/CSS, Matlab;regularcan write basic programs, no problems reading;low;No;No;No;No;Yes;;;;;;;;;;8;10
+36;Bachelor;;Business and Economics;Bachelor student;;Yes;R, stata;regularcan write basic programs, no problems reading;relatively high;No;No;No;No;Yes;;;;;;;;;;2;20
+37;Bachelor;;Business Administration;Master student;;Yes;R, Python, SQL, Stata;advancedcan write complex programs;high;No;No;No;No;Yes;;;;;;;;;;19;10
+38;Bachelor;;Life sciences ;Master student;;No;;;relatively high;N/A;N/A;N/A;N/A;Yes;;;;;;;;;;4;0
+39;Bachelor;;Business and information systems ;Bachelor student;;Yes;Python, R;beginnerproblems writing easy programs, can read;relatively low;No;No;Yes;No;No;;;;;;3;5;;;;
+40;Master;;Business Education;Ph.D. student;;No;;;relatively high;Yes;No;No;No;No;;2;6;;;;;;;;
+41;Bachelor;;Business and Economics;Other;Administrative Assistant;No;;;relatively low;No;No;Yes;No;No;;;;;;4;20;;;;
+42;Bachelor;;Computer science engineering;Master student;;Yes;Java,  c;beginnerproblems writing easy programs, can read;very low;N/A;N/A;N/A;N/A;Yes;;;;;;;;;;16;4
+43;Other;Matura;/;Bachelor student;;No;;;relatively low;No;No;No;No;Yes;;;;;;;;;;01.May;10
+44;Other;High school diploma;Business, Economics and Social Sciences;Bachelor student;;Yes;Java;regularcan write basic programs, no problems reading;high;No;No;Yes;No;Yes;;;;;;1;2;;;1;5
+45;Other;High school diploma;General education;Bachelor student;;Yes;R, Python;regularcan write basic programs, no problems reading;very high;No;No;No;No;Yes;;;;;;;;;;17;10
+46;Other;Abitur;General qualification ;Bachelor student;;Yes;R, Python, Html;beginnerproblems writing easy programs, can read;relatively high;No;No;No;No;Yes;;;;;;;;;;2;20
+47;Bachelor;;Business Informatics;Master student;;Yes;R, Python, Javascript;regularcan write basic programs, no problems reading;relatively high;No;No;No;No;Yes;;;;;;;;;;6;30
+48;Bachelor;;Business administration;Master student;;Yes;R (I’m a QFin student) , the very basics of Python and STATA (which I personally wouldn’t call programming language). So I just used them for QFin related things. ;regularcan write basic programs, no problems reading;high;N/A;N/A;N/A;N/A;Yes;;;;;;;;;;4;6
