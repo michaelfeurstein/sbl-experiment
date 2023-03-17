@@ -1,97 +1,97 @@
 "","subject","sequence","period","group.r","notation.r","duration.r","duration.log","accuracy","sus","rank.r"
-"1",1,"KV-NL","1","beginner-professional","key-value",7.15,1.96711235670592,100,82.5,"1st place"
-"2",1,"KV-NL","2","beginner-professional","natural language",6.91666666666667,1.9339339580086,100,42.5,"2nd place"
-"3",2,"NL-KV","1","beginner-professional","natural language",11.9833333333333,2.48351679549895,85,90,"1st place"
-"4",2,"NL-KV","2","beginner-professional","key-value",13.7,2.61739583283408,85,77.5,"2nd place"
-"5",3,"KV-NL","1","advanced-professional","key-value",11,2.39789527279837,100,90,"1st place"
-"6",3,"KV-NL","2","advanced-professional","natural language",9.73333333333333,2.27555642060613,100,70,"2nd place"
-"7",4,"NL-KV","1","advanced-professional","natural language",13.3833333333333,2.59401015172466,100,82.5,"2nd place"
-"8",4,"NL-KV","2","advanced-professional","key-value",7.35,1.99470031322475,100,92.5,"1st place"
-"9",5,"KV-NL","1","advanced-student","key-value",9.23333333333333,2.22282012452518,100,90,"1st place"
-"10",5,"KV-NL","2","advanced-student","natural language",6.75,1.90954250488444,100,50,"2nd place"
-"11",6,"NL-KV","1","beginner-professional","natural language",18.4166666666667,2.91325605172975,85,72.5,"2nd place"
-"12",6,"NL-KV","2","beginner-professional","key-value",7.5,2.01490302054226,100,75,"1st place"
-"13",7,"KV-NL","1","beginner-professional","key-value",8.05,2.08567209143047,80,77.5,"1st place"
-"14",7,"KV-NL","2","beginner-professional","natural language",10.0333333333333,2.30591288308672,90,60,"2nd place"
-"15",8,"KV-NL","1","advanced-professional","key-value",6.01666666666667,1.79453339611078,100,72.5,"1st place"
-"16",8,"KV-NL","2","advanced-professional","natural language",5.38333333333333,1.68330776100056,75,52.5,"2nd place"
-"17",9,"KV-NL","1","advanced-professional","key-value",7.33333333333333,1.99243016469021,100,92.5,"1st place"
-"18",9,"KV-NL","2","advanced-professional","natural language",7.66666666666667,2.03688192726104,100,40,"2nd place"
-"19",10,"NL-KV","1","beginner-professional","natural language",11.6666666666667,2.4567357728213,100,57.5,"2nd place"
-"20",10,"NL-KV","2","beginner-professional","key-value",5.55,1.71379792775834,90,57.5,"1st place"
-"21",11,"NL-KV","1","advanced-professional","natural language",20,2.99573227355399,80,42.5,"2nd place"
-"22",11,"NL-KV","2","advanced-professional","key-value",9.28333333333333,2.22822067770518,85,52.5,"1st place"
-"23",12,"KV-NL","1","beginner-student","key-value",11.6666666666667,2.4567357728213,90,77.5,"2nd place"
-"24",12,"KV-NL","2","beginner-student","natural language",22.15,3.09783749649114,85,75,"1st place"
-"25",13,"KV-NL","1","advanced-professional","key-value",10.0333333333333,2.30591288308672,100,82.5,"1st place"
-"26",13,"KV-NL","2","advanced-professional","natural language",12.7833333333333,2.54814223914516,60,22.5,"2nd place"
-"27",14,"NL-KV","1","advanced-professional","natural language",16.7666666666667,2.81939278843758,85,90,"1st place"
-"28",14,"NL-KV","2","advanced-professional","key-value",6.08333333333333,1.80555279136039,100,92.5,"1st place"
-"29",15,"KV-NL","1","beginner-professional","key-value",12.4333333333333,2.52038103798166,85,70,"1st place"
-"30",15,"KV-NL","2","beginner-professional","natural language",10.5166666666667,2.35296130031911,100,85,"1st place"
-"31",16,"KV-NL","1","beginner-professional","key-value",17.1666666666667,2.84296951900158,0,57.5,"2nd place"
-"32",16,"KV-NL","2","beginner-professional","natural language",8.16666666666667,2.10006082888257,100,72.5,"1st place"
-"33",17,"KV-NL","1","beginner-professional","key-value",13.1166666666667,2.5738836861953,100,72.5,"1st place"
-"34",17,"KV-NL","2","beginner-professional","natural language",11.4,2.43361335540045,100,50,"2nd place"
-"35",18,"NL-KV","1","beginner-professional","natural language",15.8166666666667,2.76106423638783,0,72.5,"2nd place"
-"36",18,"NL-KV","2","beginner-professional","key-value",9.3,2.23001440015921,85,80,"1st place"
-"37",19,"KV-NL","1","beginner-professional","key-value",18.5166666666667,2.91867122741753,100,95,"1st place"
-"38",19,"KV-NL","2","beginner-professional","natural language",21.5,3.06805293513362,0,60,"2nd place"
-"39",20,"KV-NL","1","advanced-professional","key-value",12.45,2.52172062291072,100,65,"1st place"
-"40",20,"KV-NL","2","advanced-professional","natural language",12.55,2.52972066557779,85,47.5,"2nd place"
-"41",21,"NL-KV","1","advanced-professional","natural language",10.75,2.37490575457367,100,87.5,"2nd place"
-"42",21,"NL-KV","2","advanced-professional","key-value",5.96666666666667,1.7861884241786,85,95,"1st place"
-"43",22,"NL-KV","1","advanced-professional","natural language",8.36666666666667,2.12425555746963,100,70,"2nd place"
-"44",22,"NL-KV","2","advanced-professional","key-value",5.23333333333333,1.65504842368615,100,85,"1st place"
-"45",23,"NL-KV","1","beginner-professional","natural language",26,3.25809653802148,100,57.5,"2nd place"
-"46",23,"NL-KV","2","beginner-professional","key-value",9,2.19722457733622,100,67.5,"1st place"
-"47",24,"NL-KV","1","advanced-professional","natural language",13.7166666666667,2.61861163845497,85,97.5,"2nd place"
-"48",24,"NL-KV","2","advanced-professional","key-value",7.93333333333333,2.07107329200932,100,100,"1st place"
-"49",25,"KV-NL","1","advanced-professional","key-value",7.5,2.01490302054226,100,92.5,"1st place"
-"50",25,"KV-NL","2","advanced-professional","natural language",7.66666666666667,2.03688192726104,100,72.5,"1st place"
-"51",26,"NL-KV","1","beginner-professional","natural language",46.25,3.83406146395843,100,80,"2nd place"
-"52",26,"NL-KV","2","beginner-professional","key-value",18.3333333333333,2.90872089656436,100,90,"1st place"
-"53",27,"KV-NL","1","beginner-student","key-value",11.7833333333333,2.46668610367447,85,85,"1st place"
-"54",27,"KV-NL","2","beginner-student","natural language",9.5,2.2512917986065,100,65,"2nd place"
-"55",28,"NL-KV","1","advanced-student","natural language",12.2833333333333,2.50824332996724,100,90,"1st place"
-"56",28,"NL-KV","2","advanced-student","key-value",6.25,1.83258146374831,100,90,"1st place"
-"57",29,"NL-KV","1","advanced-student","natural language",7.25,1.98100146886658,85,82.5,"2nd place"
-"58",29,"NL-KV","2","advanced-student","key-value",4.83333333333333,1.57553636075842,100,77.5,"1st place"
-"59",30,"KV-NL","1","advanced-student","key-value",15.8,2.76000994003292,85,82.5,"1st place"
-"60",30,"KV-NL","2","advanced-student","natural language",10.9166666666667,2.39029067341315,100,87.5,"2nd place"
-"61",31,"NL-KV","1","beginner-student","natural language",31.25,3.44201937618241,80,85,"2nd place"
-"62",31,"NL-KV","2","beginner-student","key-value",10.2333333333333,2.32565036592504,90,92.5,"1st place"
-"63",32,"KV-NL","1","advanced-student","key-value",8.35,2.12226153886276,85,92.5,"1st place"
-"64",32,"KV-NL","2","advanced-student","natural language",13.2,2.58021682959233,100,82.5,"2nd place"
-"65",33,"KV-NL","1","beginner-student","key-value",10.7166666666667,2.37180016201552,100,87.5,"2nd place"
-"66",33,"KV-NL","2","beginner-student","natural language",9.13333333333333,2.21193072472592,100,85,"1st place"
-"67",34,"NL-KV","1","beginner-student","natural language",11.7833333333333,2.46668610367447,85,85,"1st place"
-"68",34,"NL-KV","2","beginner-student","key-value",7.78333333333333,2.0519846954468,85,82.5,"2nd place"
-"69",35,"KV-NL","1","advanced-student","key-value",11.75,2.46385324059017,100,82.5,"1st place"
-"70",35,"KV-NL","2","advanced-student","natural language",9.71666666666667,2.27384262412839,100,80,"2nd place"
-"71",36,"NL-KV","1","advanced-student","natural language",20.0833333333333,2.99989028370265,60,75,"1st place"
-"72",36,"NL-KV","2","advanced-student","key-value",15.5,2.7408400239252,0,40,"2nd place"
-"73",37,"KV-NL","1","advanced-student","key-value",7.78333333333333,2.0519846954468,100,90,"1st place"
-"74",37,"KV-NL","2","advanced-student","natural language",9.25,2.22462355152433,100,60,"2nd place"
-"75",38,"NL-KV","1","beginner-student","natural language",13.2333333333333,2.58273889902503,85,80,"1st place"
-"76",38,"NL-KV","2","beginner-student","key-value",11.2,2.41591377830105,0,30,"2nd place"
-"77",39,"NL-KV","1","beginner-student","natural language",9.66666666666667,2.26868354131836,100,12.5,"2nd place"
-"78",39,"NL-KV","2","beginner-student","key-value",5.33333333333333,1.67397643357167,85,20,"1st place"
-"79",40,"KV-NL","1","beginner-professional","key-value",16.4333333333333,2.79931179238053,85,77.5,"2nd place"
-"80",40,"KV-NL","2","beginner-professional","natural language",16.4666666666667,2.80133813552577,80,80,"1st place"
-"81",41,"KV-NL","1","beginner-student","key-value",9.51666666666667,2.25304464743391,100,82.5,"2nd place"
-"82",41,"KV-NL","2","beginner-student","natural language",7.5,2.01490302054226,100,90,"1st place"
-"83",42,"NL-KV","1","beginner-student","natural language",20.4,3.01553490085017,80,85,"2nd place"
-"84",42,"NL-KV","2","beginner-student","key-value",8.7,2.16332302566054,90,95,"1st place"
-"85",43,"KV-NL","1","beginner-student","key-value",28.4166666666667,3.34697582749552,75,85,"1st place"
-"86",43,"KV-NL","2","beginner-student","natural language",12.3,2.50959926237837,75,70,"2nd place"
-"87",44,"NL-KV","1","advanced-student","natural language",19.9333333333333,2.99239337228848,0,90,"2nd place"
-"88",44,"NL-KV","2","advanced-student","key-value",11.9,2.47653840011748,0,97.5,"1st place"
-"89",45,"NL-KV","1","advanced-student","natural language",7.41666666666667,2.00372971994414,85,92.5,"1st place"
-"90",45,"NL-KV","2","advanced-student","key-value",7.05,1.95302761682418,100,95,"1st place"
-"91",46,"NL-KV","1","beginner-student","natural language",17.5666666666667,2.86600316687921,85,82.5,"2nd place"
-"92",46,"NL-KV","2","beginner-student","key-value",6.31666666666667,1.84319164286033,90,75,"1st place"
-"93",47,"NL-KV","1","advanced-student","natural language",18.8166666666667,2.93474300192756,0,85,"1st place"
-"94",47,"NL-KV","2","advanced-student","key-value",7.76666666666667,2.04984107190355,85,95,"1st place"
-"95",48,"KV-NL","1","advanced-student","key-value",11.6666666666667,2.4567357728213,100,92.5,"1st place"
-"96",48,"KV-NL","2","advanced-student","natural language",8,2.07944154167984,85,80,"2nd place"
+"1",1,"KV-NL","1","beginner-professional","key-value",7.15,1.96711235670592,100,82.5,3
+"2",1,"KV-NL","2","beginner-professional","natural language",6.91666666666667,1.9339339580086,100,42.5,2
+"3",2,"NL-KV","1","beginner-professional","natural language",11.9833333333333,2.48351679549895,72.06,90,3
+"4",2,"NL-KV","2","beginner-professional","key-value",13.7,2.61739583283408,83.33,77.5,2
+"5",3,"KV-NL","1","advanced-professional","key-value",11,2.39789527279837,100,90,3
+"6",3,"KV-NL","2","advanced-professional","natural language",9.73333333333333,2.27555642060613,100,70,2
+"7",4,"NL-KV","1","advanced-professional","natural language",13.3833333333333,2.59401015172466,100,82.5,2
+"8",4,"NL-KV","2","advanced-professional","key-value",7.35,1.99470031322475,100,92.5,3
+"9",5,"KV-NL","1","advanced-student","key-value",9.23333333333333,2.22282012452518,100,90,3
+"10",5,"KV-NL","2","advanced-student","natural language",6.75,1.90954250488444,100,50,2
+"11",6,"NL-KV","1","beginner-professional","natural language",18.4166666666667,2.91325605172975,72.06,72.5,2
+"12",6,"NL-KV","2","beginner-professional","key-value",7.5,2.01490302054226,100,75,3
+"13",7,"KV-NL","1","beginner-professional","key-value",8.05,2.08567209143047,55.39,77.5,3
+"14",7,"KV-NL","2","beginner-professional","natural language",10.0333333333333,2.30591288308672,75,60,2
+"15",8,"KV-NL","1","advanced-professional","key-value",6.01666666666667,1.79453339611078,100,72.5,3
+"16",8,"KV-NL","2","advanced-professional","natural language",5.38333333333333,1.68330776100056,63.73,52.5,2
+"17",9,"KV-NL","1","advanced-professional","key-value",7.33333333333333,1.99243016469021,100,92.5,3
+"18",9,"KV-NL","2","advanced-professional","natural language",7.66666666666667,2.03688192726104,100,40,2
+"19",10,"NL-KV","1","beginner-professional","natural language",11.6666666666667,2.4567357728213,100,57.5,2
+"20",10,"NL-KV","2","beginner-professional","key-value",5.55,1.71379792775834,90,57.5,3
+"21",11,"NL-KV","1","advanced-professional","natural language",20,2.99573227355399,75.49,42.5,2
+"22",11,"NL-KV","2","advanced-professional","key-value",9.28333333333333,2.22822067770518,100,52.5,3
+"23",12,"KV-NL","1","beginner-student","key-value",11.6666666666667,2.4567357728213,91.67,77.5,2
+"24",12,"KV-NL","2","beginner-student","natural language",22.15,3.09783749649114,75,75,3
+"25",13,"KV-NL","1","advanced-professional","key-value",10.0333333333333,2.30591288308672,100,82.5,3
+"26",13,"KV-NL","2","advanced-professional","natural language",12.7833333333333,2.54814223914516,77.45,22.5,2
+"27",14,"NL-KV","1","advanced-professional","natural language",16.7666666666667,2.81939278843758,80.39,90,3
+"28",14,"NL-KV","2","advanced-professional","key-value",6.08333333333333,1.80555279136039,100,92.5,3
+"29",15,"KV-NL","1","beginner-professional","key-value",12.4333333333333,2.52038103798166,80.39,70,3
+"30",15,"KV-NL","2","beginner-professional","natural language",10.5166666666667,2.35296130031911,100,85,3
+"31",16,"KV-NL","1","beginner-professional","key-value",17.1666666666667,2.84296951900158,0,57.5,2
+"32",16,"KV-NL","2","beginner-professional","natural language",8.16666666666667,2.10006082888257,100,72.5,3
+"33",17,"KV-NL","1","beginner-professional","key-value",13.1166666666667,2.5738836861953,100,72.5,3
+"34",17,"KV-NL","2","beginner-professional","natural language",11.4,2.43361335540045,100,50,2
+"35",18,"NL-KV","1","beginner-professional","natural language",15.8166666666667,2.76106423638783,0,72.5,2
+"36",18,"NL-KV","2","beginner-professional","key-value",9.3,2.23001440015921,80.39,80,3
+"37",19,"KV-NL","1","beginner-professional","key-value",18.5166666666667,2.91867122741753,100,95,3
+"38",19,"KV-NL","2","beginner-professional","natural language",21.5,3.06805293513362,0,60,2
+"39",20,"KV-NL","1","advanced-professional","key-value",12.45,2.52172062291072,100,65,3
+"40",20,"KV-NL","2","advanced-professional","natural language",12.55,2.52972066557779,83.33,47.5,2
+"41",21,"NL-KV","1","advanced-professional","natural language",10.75,2.37490575457367,100,87.5,2
+"42",21,"NL-KV","2","advanced-professional","key-value",5.96666666666667,1.7861884241786,75,95,3
+"43",22,"NL-KV","1","advanced-professional","natural language",8.36666666666667,2.12425555746963,100,70,2
+"44",22,"NL-KV","2","advanced-professional","key-value",5.23333333333333,1.65504842368615,100,85,3
+"45",23,"NL-KV","1","beginner-professional","natural language",26,3.25809653802148,100,57.5,2
+"46",23,"NL-KV","2","beginner-professional","key-value",9,2.19722457733622,100,67.5,3
+"47",24,"NL-KV","1","advanced-professional","natural language",13.7166666666667,2.61861163845497,72.06,97.5,2
+"48",24,"NL-KV","2","advanced-professional","key-value",7.93333333333333,2.07107329200932,100,100,3
+"49",25,"KV-NL","1","advanced-professional","key-value",7.5,2.01490302054226,100,92.5,3
+"50",25,"KV-NL","2","advanced-professional","natural language",7.66666666666667,2.03688192726104,100,72.5,3
+"51",26,"NL-KV","1","beginner-professional","natural language",46.25,3.83406146395843,100,80,2
+"52",26,"NL-KV","2","beginner-professional","key-value",18.3333333333333,2.90872089656436,100,90,3
+"53",27,"KV-NL","1","beginner-student","key-value",11.7833333333333,2.46668610367447,80.39,85,3
+"54",27,"KV-NL","2","beginner-student","natural language",9.5,2.2512917986065,100,65,2
+"55",28,"NL-KV","1","advanced-student","natural language",12.2833333333333,2.50824332996724,100,90,3
+"56",28,"NL-KV","2","advanced-student","key-value",6.25,1.83258146374831,100,90,3
+"57",29,"NL-KV","1","advanced-student","natural language",7.25,1.98100146886658,80.39,82.5,2
+"58",29,"NL-KV","2","advanced-student","key-value",4.83333333333333,1.57553636075842,100,77.5,3
+"59",30,"KV-NL","1","advanced-student","key-value",15.8,2.76000994003292,72.06,82.5,3
+"60",30,"KV-NL","2","advanced-student","natural language",10.9166666666667,2.39029067341315,100,87.5,2
+"61",31,"NL-KV","1","beginner-student","natural language",31.25,3.44201937618241,69.12,85,2
+"62",31,"NL-KV","2","beginner-student","key-value",10.2333333333333,2.32565036592504,80.39,92.5,3
+"63",32,"KV-NL","1","advanced-student","key-value",8.35,2.12226153886276,80.39,92.5,3
+"64",32,"KV-NL","2","advanced-student","natural language",13.2,2.58021682959233,100,82.5,2
+"65",33,"KV-NL","1","beginner-student","key-value",10.7166666666667,2.37180016201552,100,87.5,2
+"66",33,"KV-NL","2","beginner-student","natural language",9.13333333333333,2.21193072472592,100,85,3
+"67",34,"NL-KV","1","beginner-student","natural language",11.7833333333333,2.46668610367447,72.06,85,3
+"68",34,"NL-KV","2","beginner-student","key-value",7.78333333333333,2.0519846954468,80.39,82.5,2
+"69",35,"KV-NL","1","advanced-student","key-value",11.75,2.46385324059017,100,82.5,3
+"70",35,"KV-NL","2","advanced-student","natural language",9.71666666666667,2.27384262412839,100,80,2
+"71",36,"NL-KV","1","advanced-student","natural language",20.0833333333333,2.99989028370265,57.84,75,3
+"72",36,"NL-KV","2","advanced-student","key-value",15.5,2.7408400239252,0,40,2
+"73",37,"KV-NL","1","advanced-student","key-value",7.78333333333333,2.0519846954468,100,90,3
+"74",37,"KV-NL","2","advanced-student","natural language",9.25,2.22462355152433,100,60,2
+"75",38,"NL-KV","1","beginner-student","natural language",13.2333333333333,2.58273889902503,80.39,80,3
+"76",38,"NL-KV","2","beginner-student","key-value",11.2,2.41591377830105,0,30,2
+"77",39,"NL-KV","1","beginner-student","natural language",9.66666666666667,2.26868354131836,100,12.5,2
+"78",39,"NL-KV","2","beginner-student","key-value",5.33333333333333,1.67397643357167,63.73,20,3
+"79",40,"KV-NL","1","beginner-professional","key-value",16.4333333333333,2.79931179238053,83.33,77.5,2
+"80",40,"KV-NL","2","beginner-professional","natural language",16.4666666666667,2.80133813552577,60.78,80,3
+"81",41,"KV-NL","1","beginner-student","key-value",9.51666666666667,2.25304464743391,100,82.5,2
+"82",41,"KV-NL","2","beginner-student","natural language",7.5,2.01490302054226,100,90,3
+"83",42,"NL-KV","1","beginner-student","natural language",20.4,3.01553490085017,60.78,85,2
+"84",42,"NL-KV","2","beginner-student","key-value",8.7,2.16332302566054,80.39,95,3
+"85",43,"KV-NL","1","beginner-student","key-value",28.4166666666667,3.34697582749552,52.45,85,3
+"86",43,"KV-NL","2","beginner-student","natural language",12.3,2.50959926237837,77.45,70,2
+"87",44,"NL-KV","1","advanced-student","natural language",19.9333333333333,2.99239337228848,0,90,2
+"88",44,"NL-KV","2","advanced-student","key-value",11.9,2.47653840011748,0,97.5,3
+"89",45,"NL-KV","1","advanced-student","natural language",7.41666666666667,2.00372971994414,74.51,92.5,3
+"90",45,"NL-KV","2","advanced-student","key-value",7.05,1.95302761682418,100,95,3
+"91",46,"NL-KV","1","beginner-student","natural language",17.5666666666667,2.86600316687921,72.06,82.5,2
+"92",46,"NL-KV","2","beginner-student","key-value",6.31666666666667,1.84319164286033,83.33,75,3
+"93",47,"NL-KV","1","advanced-student","natural language",18.8166666666667,2.93474300192756,0,85,3
+"94",47,"NL-KV","2","advanced-student","key-value",7.76666666666667,2.04984107190355,80.39,95,3
+"95",48,"KV-NL","1","advanced-student","key-value",11.6666666666667,2.4567357728213,100,92.5,3
+"96",48,"KV-NL","2","advanced-student","natural language",8,2.07944154167984,72.06,80,2
