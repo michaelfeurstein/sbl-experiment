@@ -31,13 +31,15 @@ round(100*prop.table(value), digits = 2)
 f_data <- read.csv("accuracy_features_flat.csv", sep = ";", dec = ",", header = TRUE)
 
 # Draw barplot with grouping & stacking
-ggplot(f_data,                  
-       aes(x = notation,
-           y = value,
-           fill = accuracy)) + 
-  geom_bar(stat = "identity",
-           position = "stack") +
-  facet_grid(~ feature)
+ggplot(f_data,
+        aes(x = notation, y = value, fill = accuracy)) +
+        geom_bar(stat = "identity", position = "stack") +
+        facet_grid(cols = vars(feature)) +
+  scale_y_continuous(labels = scales::percent) +
+  geom_text(aes(label = paste0(round(value, digits = 0),"%")),
+            position = position_stack(),
+            vjust = 1.2,
+            size = 2.5)
 
 # Quality
 q_data <- read.csv("accuracy_quality_flat.csv", sep = ";", dec = ",", header = TRUE)
