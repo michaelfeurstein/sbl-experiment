@@ -29,6 +29,11 @@ round(100*prop.table(value), digits = 2)
 
 # Features
 f_data <- read.csv("accuracy_features_flat.csv", sep = ";", dec = ",", header = TRUE)
+# write to csv so we have tidy format
+write.csv(f_data, "accuracy_features_flat_prepared.csv")
+rm(f_data)
+# read from prepared csv
+f_data <- read.csv("accuracy_features_flat_prepared.csv")
 
 # Draw barplot with grouping & stacking
 ggplot(f_data,
