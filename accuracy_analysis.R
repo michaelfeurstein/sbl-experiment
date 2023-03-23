@@ -40,7 +40,7 @@ ggplot(f_data,
         aes(x = notation, y = value, fill = accuracy)) +
         geom_bar(stat = "identity", position = "stack") +
         facet_grid(cols = vars(feature)) +
-  scale_y_continuous(labels = scales::percent) +
+  scale_y_continuous(labels = function(x) paste0(x, "%")) +
   geom_text(aes(label = paste0(round(value, digits = 0),"%")),
             position = position_stack(),
             vjust = 1.2,
