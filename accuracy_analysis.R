@@ -1,5 +1,7 @@
 library(ggplot2)
 
+#### Data Preparation ####
+
 mydata <- read.csv("accuracy_details.csv", sep = ";", dec = ",", header = TRUE)
 
 syntaxMapping <- c("nl" = 1, "kv" = 2)
@@ -25,7 +27,7 @@ value
 round(100*prop.table(value), digits = 2)
 ####
 
-## STACKED BARCHARTS PLOTS
+#### Data Visualization ####
 
 # Features
 f_data <- read.csv("accuracy_features_flat.csv", sep = ";", dec = ",", header = TRUE)
@@ -48,12 +50,19 @@ ggplot(f_data,
 
 # Quality
 q_data <- read.csv("accuracy_quality_flat.csv", sep = ";", dec = ",", header = TRUE)
+# write to csv so we have tidy format
+write.csv(q_data, "accuracy_quality_flat_prepared.csv")
+rm(q_data)
+# read from prepared csv
+q_data <- read.csv("accuracy_quality_flat_prepared.csv")
 
 # Draw barplot with grouping & stacking
-ggplot(q_data,                  
-       aes(x = notation,
-           y = value,
-           fill = accuracy)) + 
-  geom_bar(stat = "identity",
-           position = "stack") +
-  facet_grid(~ feature)
+ggplot(q_data,
+        aes(x = notation, y = value, fill = accuracy)) +
+        geom_bar(stat = "identity", position = "stack") +
+        facet_grid(cols = vars(feature)) +
+  scale_y_continuous(labels = function(x) paste0(x, "%")) +
+  geom_text(aes(label = paste0(round(value, digits = 0),"%")),
+            position = position_stack(),
+            vjust = 1.2,
+            size = 2.5)
