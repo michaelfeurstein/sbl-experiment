@@ -37,11 +37,15 @@ rm(f_data)
 # read from prepared csv
 f_data <- read.csv("accuracy_features_flat_prepared.csv")
 
+# New facet label names for dose variable
+feature_f.labels <- c("F1[a]", "F[2]", "asd", "asd", "asd", "asd", "asd", "asd", "asd", "asd", "asd", "asd", "asd", "asd", "asd", "asd", "asd")
+names(feature_f.labels) <- c("f1a", "f2a", "f2b", "f2c", "f2d", "f2e", "f3a", "f3b", "f4a", "f4b", "f4c", "f4d", "f4e", "f4f", "f4g", "f5a", "f5b")
+
 # Draw barplot with grouping & stacking
 ggplot(f_data,
         aes(x = notation, y = value, fill = accuracy)) +
         geom_bar(stat = "identity", position = "stack") +
-        facet_grid(cols = vars(feature)) +
+        facet_grid(cols = vars(feature), labeller = labeller(feature = feature_f.labels, .default = label_parsed)) +
   scale_y_continuous(labels = function(x) paste0(x, "%")) +
   geom_text(aes(label = paste0(round(value, digits = 0),"%")),
             position = position_stack(),
@@ -57,10 +61,16 @@ rm(q_data)
 q_data <- read.csv("accuracy_quality_flat_prepared.csv")
 
 # Draw barplot with grouping & stacking
+
+# New facet label names for dose variable
+feature_q.labels <- c("Q[1]", "Q[2]", "Q[3]", "Q[4]", "Q[5]", "Q[6]")
+names(feature_q.labels) <- c("q1", "q2", "q3", "q4", "q5", "q6")
+
+# plot
 ggplot(q_data,
         aes(x = notation, y = value, fill = accuracy)) +
         geom_bar(stat = "identity", position = "stack") +
-        facet_grid(cols = vars(feature)) +
+        facet_grid(cols = vars(feature), labeller = labeller(feature = feature_q.labels, .default = label_parsed)) +
   scale_y_continuous(labels = function(x) paste0(x, "%")) +
   geom_text(aes(label = paste0(round(value, digits = 0),"%")),
             position = position_stack(),
