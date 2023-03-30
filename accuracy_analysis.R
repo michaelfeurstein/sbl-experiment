@@ -3,6 +3,11 @@ library(ggplot2)
 #### Data Preparation ####
 
 mydata <- read.csv("accuracy_details.csv", sep = ";", dec = ",", header = TRUE)
+# write to csv so we have readable format for github
+write.csv(mydata, "accuracy_details_prepared.csv")
+rm(mydata)
+# read from prepared csv
+mydata <- read.csv("accuracy_details_prepared.csv")
 
 syntaxMapping <- c("nl" = 1, "kv" = 2)
 groupMapping <- c("beginner, student" = "bs", "advanced, student" = "as", "beginner, professional" = "bp", "advanced, professional" = "ap")
