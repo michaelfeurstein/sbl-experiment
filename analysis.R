@@ -1,12 +1,12 @@
 library(dplyr)
 library(ggplot2)
 library(ggpubr)
-library(lme4)
-library(lmerTest)
-library(simr)
-library(pwr)
+#library(lme4)
+#library(lmerTest)
+#library(simr)
+#library(pwr)
 library(effectsize)
-library(MASS)
+#library(MASS)
 
 ### IMPORT DATA  ####
 
@@ -46,19 +46,30 @@ df <- subset(mydata, select = c("subject", "sequence", "period", "group.r", "not
 # write to csv so we don't need to run above lines too often
 write.csv(df, "data_prepared.csv")
 
+# read from prepared csv
+df <- read.csv("data_prepared.csv")
+
 ################################# #
 ################################# #
 
 ### SUMMARY OF DATA  ####
-#### duration: mean, sd ####
+#### DURATION ####
+##### descriptive ####
+#### mean, sd, min, max, med, q1, q3
 
+# using log transformed duration
 df %>%
   group_by(notation.r) %>%
   summarize(mean_duration = mean(duration.log), sd_duration = sd(duration.log))
 
+# using measured duration in minutes
 df %>%
   group_by(notation.r) %>%
-  summarize(mean_duration = mean(duration.r), sd_duration = sd(duration.r))
+  summarize(mean_duration = mean(duration.r), sd_duration = sd(duration.r), min_duration = min(duration.r), max_duration = max(duration.r), med_duration = median(duration.r), q1 = quantile(duration.r, 0.25), q3 = quantile(duration.r, 0.75))
+
+##### boxplot ####
+par(mar=c(3, 6, 3, 3))
+bp_duration <- boxplot(duration.r ~ notation.r, main = "Duration", data = df, ylab = "Duration (in min.)", names = c("1" = "NL", "2" = "KV"), xlab = "")
 
 #### accuracy: mean, sd ####
 
@@ -144,6 +155,7 @@ boxplot(accuracy ~ notation.r, data = df, xlab = "Notation", ylab = "Accuracy", 
 #### accuracy ####
 # I need help transforming accuracy
 nl_acc<-df$accuracy[df$notation.r == "natural language"]
+plot(density(nl_acc))
 hist(nl_acc)
 
 # transformation trial and error
@@ -155,7 +167,11 @@ hist(nl_acc)
 # reflect data (add 1 and substract from maximum and use absolute values)
 # original data is negative skewed (left tail) (also sehr viele werte bei 100 herum) (richtig ?)
 nl_acc_t0<-abs((nl_acc+1)-100)
+plot(density(nl_acc_t0))
 hist(nl_acc_t0)
+
+nl_acc_t1<-(nl_acc+1)
+hist(nl_acc_t1)
 
 # 1st try
 # starke transformation mit log base 10
@@ -166,8 +182,8 @@ shapiro.test(nl_acc_t)
 
 # 2nd try
 # boxcox transform
-nl_acc_bc<-boxcox(nl_acc~1,lambda=seq(-2,4,0.01))
-nl_acc_bc_t<-(nl_acc^3.2-1)/3.2
+nl_acc_bc<-boxcox(nl_acc_t1~1,lambda=seq(-2,4,0.01))
+nl_acc_bc_t<-(nl_acc_t1^2-1)/2
 plot(density(nl_acc_bc_t))
 hist(nl_acc_bc_t)
 shapiro.test(nl_acc_bc_t)
@@ -183,7 +199,7 @@ hist(nl_sus)
 bc1<-boxcox(nl_sus~1,lambda=seq(-2,4,0.01))
 # from bc1 plot we can say that possibly 2 fits well also in terms of not too complex transformation such as 2.3
 
-# transformation with actual formula
+# step 2 transformation with actual formula
 nl_sus_t<-(nl_sus^3.2-1)/3.2
 # two plots showing the same yt in different ways
 plot(density(nl_sus_t))
@@ -245,9 +261,15 @@ sp.plot <- ggplot(sp, aes(x = period,
   labs(color = "Sequence")
 
 # calculate and plot sum of means for notation,period
-np <- df %>%
+# using log transformed duration
+np_t <- df %>%
   group_by(notation.r, period) %>%
   summarize(mean_duration = mean(duration.log))
+
+# using non-transformed duration
+np <- df %>%
+  group_by(notation.r, period) %>%
+  summarize(mean_duration = mean(duration.r))
 
 pd = position_dodge(0)
 np.plot <- ggplot(np, aes(x = period,
@@ -266,12 +288,18 @@ np.plot <- ggplot(np, aes(x = period,
     axis.text    = element_text(face = "bold"),
     plot.caption = element_text(hjust = 0)
   ) +
+  scale_x_continuous(limits = c(0.5, 2.5),breaks=seq(1,2),minor_breaks=NULL) +
   ylab("Duration mean") +
   xlab("Period") +
   labs(color = "Notation")
 
+np.plot
+
 # arrange both plots in one figure
 ggarrange(sp.plot, np.plot, nrow = 1, ncol = 2)
+
+##### interaction plot ####
+interaction.plot(factor(df$period),df$notation,df$duration.r)
 
 # estimate carry-over effect using sum values by t-test
 # Null Hypothesis: there is a significant difference between NL-KV / KV-NL sequences --> this means there is a carry over effect (use only period 1)
@@ -333,12 +361,18 @@ np.plot <- ggplot(np, aes(x = period,
     axis.text    = element_text(face = "bold"),
     plot.caption = element_text(hjust = 0)
   ) +
+  scale_x_continuous(limits = c(0.5, 2.5),breaks=seq(1,2),minor_breaks=NULL) +
   ylab("SUS score") +
   xlab("Period") +
   labs(color = "Notation")
 
+np.plot
+
 # arrange both plots in one figure
 ggarrange(sp.plot, np.plot, nrow = 1, ncol = 2)
+
+##### interaction plot ####
+interaction.plot(factor(df$period),df$notation,df$sus)
 
 # estimate carry-over effect using sum values by t-test
 # Null Hypothesis: there is a significant difference between NL-KV / KV-NL sequences --> this means there is a carry over effect (use only period 1)
@@ -396,12 +430,18 @@ np.plot <- ggplot(np, aes(x = period,
     axis.text    = element_text(face = "bold"),
     plot.caption = element_text(hjust = 0)
   ) +
+  scale_x_continuous(limits = c(0.5, 2.5),breaks=seq(1,2),minor_breaks=NULL) +
   ylab("Accuracy") +
   xlab("Period") +
   labs(color = "Notation")
 
+np.plot
+
 # arrange both plots in one figure
 ggarrange(sp.plot, np.plot, nrow = 1, ncol = 2)
+
+##### interaction plot ####
+interaction.plot(factor(df$period),df$notation,df$accuracy)
 
 # estimate carry-over effect using sum values by t-test
 # Null Hypothesis: there is a significant difference between NL-KV / KV-NL sequences --> this means there is a carry over effect (use only period 1)
@@ -454,13 +494,14 @@ shapiro.test(df$duration.log[df$notation.r == "natural language"])
 shapiro.test(df$duration.log[df$notation.r == "key-value"])
 
 ##### t-test ####
-t.test(df$duration.log[df$notation.r == "natural language"],df$duration.log[df$notation.r == "key-value"], paired = TRUE, conf.level = 0.95)
+## two-sided, paired t-test
+t.test(df$duration.log[df$notation.r == "natural language"],df$duration.log[df$notation.r == "key-value"], paired = TRUE, conf.level = 0.95, alternative = "two.sided")
 
 ##### wilcoxon ####
-wilcox.test(df$duration.log[df$notation.r == "natural language"],df$duration.log[df$notation.r == "key-value"], paired = TRUE, conf.int=TRUE, conf.level = 0.95)
+wilcox.test(df$duration.r[df$notation.r == "natural language"],df$duration.r[df$notation.r == "key-value"], paired = TRUE, conf.int=TRUE, conf.level = 0.95)
 
 ##### effect size ####
-cohens_d(df$duration.log[df$notation.r == "natural language"],df$duration.log[df$notation.r == "key-value"], paired = TRUE)
+cohens_d(df$duration.log[df$notation.r == "natural language"],df$duration.log[df$notation.r == "key-value"], paired = TRUE, pooled_sd = TRUE)
 
 ##### linear regression ####
 m4<-lmer(duration.log~notation.r+factor(period)+(1|subject),data=df)
@@ -476,7 +517,7 @@ abline(0, 0)
 # correctness of result from coding task (creation of video-based learning module)
 
 ##### boxplot ####
-boxplot(accuracy ~ notation.r, data = df, xlab = "Notation", ylab = "Accuracy", names = c("1" = "NL", "2" = "KV"))
+boxplot(accuracy ~ notation.r, data = df, xlab = "Notation", ylab = "Accuracy in percent", names = c("1" = "NL", "2" = "KV"))
 
 ##### mean ####
 df %>%
@@ -502,20 +543,20 @@ shapiro.test(df$accuracy[df$notation.r == "natural language"])
 shapiro.test(df$accuracy[df$notation.r == "key-value"])
 
 ##### t-test ####
-t.test(df$accuracy[df$notation.r == "natural language"],df$accuracy[df$notation.r == "key-value"], paired = TRUE, conf.level = 0.95)
+t.test(df$accuracy[df$notation.r == "natural language"],df$accuracy[df$notation.r == "key-value"], paired = TRUE, conf.level = 0.95, alternative = "two.sided")
 
 ##### wilcoxon ####
 wilcox.test(df$accuracy[df$notation.r == "natural language"],df$accuracy[df$notation.r == "key-value"], paired = TRUE, conf.int=TRUE, conf.level = 0.95)
 
 ##### effect size ####
-cohens_d(df$accuracy[df$notation.r == "natural language"],df$accuracy[df$notation.r == "key-value"], paired = TRUE)
+cohens_d(df$accuracy[df$notation.r == "natural language"],df$accuracy[df$notation.r == "key-value"], paired = TRUE, pooled_sd = TRUE)
 
 #### SUS  ####
 # correctness of result from coding task (creation of video-based learning module)
 
 ##### boxplot ####
-boxplot(sus ~ notation.r, data = df, xlab = "Notation", ylab = "Accuracy", names = c("1" = "NL", "2" = "KV"))
-boxplot(sust ~ notation.r, data = df, xlab = "Notation", ylab = "Accuracy", names = c("1" = "NL", "2" = "KV"))
+boxplot(sus ~ notation.r, data = df, xlab = "Notation", ylab = "SUS score", names = c("1" = "NL", "2" = "KV"))
+boxplot(sust ~ notation.r, data = df, xlab = "Notation", ylab = "SUS transformed", names = c("1" = "NL", "2" = "KV"))
 
 ##### histogram ####
 hist(df$sus[df$notation.r == "natural language"])
@@ -552,14 +593,14 @@ shapiro.test(df$sus[df$notation.r == "key-value"])
 
 ##### t-test ####
 # use parametric test with transformed data
-t.test(df$sust[df$notation.r == "natural language"],df$sust[df$notation.r == "key-value"], paired = TRUE, conf.level = 0.95)
+t.test(df$sust[df$notation.r == "natural language"],df$sust[df$notation.r == "key-value"], paired = TRUE, conf.level = 0.95, alternative = "two.sided")
 
 ##### wilcoxon ####
 # double check with non-parametric test on regular data
 wilcox.test(df$sus[df$notation.r == "natural language"],df$sus[df$notation.r == "key-value"], paired = TRUE, conf.int=TRUE, conf.level = 0.95)
 
 ##### effect size ####
-cohens_d(df$sust[df$notation.r == "natural language"],df$sust[df$notation.r == "key-value"], paired = TRUE)
+cohens_d(df$sust[df$notation.r == "natural language"],df$sust[df$notation.r == "key-value"], paired = TRUE, pooled_sd = TRUE)
 
 ##### linear regression ####
 m_sus<-lmer(sust~notation.r+factor(period)+(1|subject),data=df)
@@ -570,3 +611,10 @@ qqnorm(df$sust, pch = 1, frame = FALSE)
 qqline(df$sust, col = "steelblue", lwd = 2)
 plot(df$sust, resid(m_sus))
 abline(0, 0) 
+
+# TODO
+# - remove outlier and run steps again
+# - report if results change (hopefully not)
+
+
+
