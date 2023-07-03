@@ -519,7 +519,6 @@ library(multcomp)
 summary(glht(m4, linfct=mcp(notation.r="Tukey")))
 
 ###### Tukey HSD ####
-
 model <- aov(duration.r~notation.r, data=df)
 summary(model)
 TukeyHSD(model, conf.level=.95)
@@ -530,6 +529,9 @@ plot(TukeyHSD(model, conf.level=.95), las = 1, cex.axis=0.75)
 
 # Result duration.r (minutes)
 # mean difference = 3.5420 lwr = 1.0886 upr = 5.9953
+
+# Report: Participants using key-value notation were 3.5 minutes faster than
+# participants using a natural language notation
 
 #### ACCURACY  ####
 # correctness of result from coding task (creation of video-based learning module)
