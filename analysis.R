@@ -505,6 +505,7 @@ cohens_d(df$duration.log[df$notation.r == "natural language"],df$duration.log[df
 
 ##### ANOVA ####
 ###### linear regression ####
+# based on input from Thomas Rusch
 m4<-lmer(duration.log~notation.r+factor(period)+(1|subject),data=df)
 anova(m4)
 summary(m4)
