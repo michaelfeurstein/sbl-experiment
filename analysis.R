@@ -1,7 +1,7 @@
 library(dplyr)
 library(ggplot2)
 library(ggpubr)
-#library(lme4)
+library(lme4)
 #library(lmerTest)
 #library(simr)
 #library(pwr)
@@ -503,7 +503,8 @@ wilcox.test(df$duration.r[df$notation.r == "natural language"],df$duration.r[df$
 ##### effect size ####
 cohens_d(df$duration.log[df$notation.r == "natural language"],df$duration.log[df$notation.r == "key-value"], paired = TRUE, pooled_sd = TRUE)
 
-##### linear regression ####
+##### ANOVA ####
+###### linear regression ####
 m4<-lmer(duration.log~notation.r+factor(period)+(1|subject),data=df)
 anova(m4)
 summary(m4)
@@ -512,6 +513,22 @@ qqnorm(df$duration.log, pch = 1, frame = FALSE)
 qqline(df$duration.log, col = "steelblue", lwd = 2)
 plot(df$duration.log, resid(m4))
 abline(0, 0) 
+
+library(multcomp)
+summary(glht(m4, linfct=mcp(notation.r="Tukey")))
+
+###### Tukey HSD ####
+
+model <- aov(duration.r~notation.r, data=df)
+summary(model)
+TukeyHSD(model, conf.level=.95)
+plot(TukeyHSD(model, conf.level=.95), las = 1, cex.axis=0.75)
+
+# Result duration.log (log transformed)
+# mean difference = 0.26899 lwr = 0.1012 upr = 0.4367
+
+# Result duration.r (minutes)
+# mean difference = 3.5420 lwr = 1.0886 upr = 5.9953
 
 #### ACCURACY  ####
 # correctness of result from coding task (creation of video-based learning module)
