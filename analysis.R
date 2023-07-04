@@ -2,10 +2,12 @@ library(dplyr)
 library(ggplot2)
 library(ggpubr)
 library(lme4)
+library(effectsize)
+library(multcomp)
 #library(lmerTest)
 #library(simr)
 #library(pwr)
-library(effectsize)
+
 #library(MASS)
 
 ### IMPORT DATA  ####
@@ -507,6 +509,9 @@ wilcox.test(df$duration.r[df$notation.r == "natural language"],df$duration.r[df$
 cohens_d(df$duration.log[df$notation.r == "natural language"],df$duration.log[df$notation.r == "key-value"], paired = TRUE, pooled_sd = TRUE)
 
 ##### ANOVA ####
+
+# mean difference and confidence interval (CI) bounds
+
 ###### linear regression ####
 # based on input from Thomas Rusch
 m4<-lmer(duration.log~notation.r+factor(period)+(1|subject),data=df)
@@ -518,23 +523,77 @@ qqline(df$duration.log, col = "steelblue", lwd = 2)
 plot(df$duration.log, resid(m4))
 abline(0, 0) 
 
-library(multcomp)
 summary(glht(m4, linfct=mcp(notation.r="Tukey")))
 
 ###### Tukey HSD ####
-model <- aov(duration.r~notation.r, data=df)
+# based on input from Stefan Sobernig
+model <- aov(duration.log~notation.r, data=df)
 summary(model)
-TukeyHSD(model, conf.level=.95)
-plot(TukeyHSD(model, conf.level=.95), las = 1, cex.axis=0.75)
+result <- TukeyHSD(model, "notation.r", conf.level=.95, ordered = TRUE)
+result$notation.r
+resultDF <- data.frame(result$notation.r)
+
+# //
+# not needed / keep for reference
+# extract meandiff and CI bounds from TukeyHSD resultDF
+#duration.meandiff <- resultDF[1]$diff
+#duration.lwr <- resultDF[2]$lwr
+#duration.upr <- resultDF[3]$upr
+# //
+
+# Plotting Tukey HSD
+# Source: Stefan aov.html + http://sape.inf.usi.ch/quick-reference/ggplot2/geom_pointrange
+
+# (1) using log transformed data
+d=data.frame(contrast=rownames(resultDF), lower=resultDF[2]$lwr, mean=resultDF[1]$diff, upper=resultDF[3]$upr)
+
+ggplot() + 
+  geom_pointrange(data=d, mapping=aes(x=contrast, y=mean, ymin=lower, ymax=upper), size=1, color="black", fill="white", shape=22) + 
+  geom_hline(yintercept = 0, linetype="dotted") +
+  scale_y_continuous(limits=c(-0.5,1)) +
+  coord_flip() +
+  ylab('Mean Differences (log(TIME))') +
+  xlab('Model') + theme_bw() + theme(legend.position="none",
+                                     axis.title.x=element_blank(),
+                                     axis.text.x=element_text(size=16),
+                                     axis.title.y=element_blank(),
+                                     axis.text.y=element_blank())
+
+# (2) using back-transformed data for reporting
+duration.meandiff.b <- exp(duration.meandiff)
+duration.lwr.b <- exp(duration.lwr)
+duration.upr.b <- exp(duration.upr)
+
+d=data.frame(contrast=rownames(resultDF), lower=exp(resultDF[2]$lwr), mean=exp(resultDF[1]$diff), upper=exp(resultDF[3]$upr))
+
+ggplot(data=d) +
+  geom_bar(aes(x=contrast, y=mean-1), stat="identity", fill="lightblue", position = position_nudge(y = 1)) +
+  geom_pointrange(mapping=aes(x=contrast, y=mean, ymin=lower, ymax=upper), size=1, color="black", fill="white", shape=22) +
+  geom_hline(yintercept = 1, linetype="dotted") +
+  scale_y_continuous(limits=c(-0.5,2)) +
+  coord_flip() +
+  ylab('Mean Differences (log(TIME))') +
+  xlab('Model') + theme_bw() + theme(legend.position="none",
+                                     axis.title.x=element_blank(),
+                                     axis.text.x=element_text(size=16),
+                                     axis.title.y=element_blank(),
+                                     axis.text.y=element_blank())
+
+d
+
+# /
+# keep for reference
+# 2-exp(c(0.1012, 0.26899, 0.4367))
+# exp(c(0.1012, 0.26899, 0.4367))
+# /
 
 # Result duration.log (log transformed)
-# mean difference = 0.26899 lwr = 0.1012 upr = 0.4367
+# lwr = 0.1012 mean difference = 0.26899 upr = 0.4367
 
-# Result duration.r (minutes)
-# mean difference = 3.5420 lwr = 1.0886 upr = 5.9953
+# Result duration (back transformed)
+# lwr = 1.106576 mean difference = 1.308645  upr = 1.547615
 
-# Report: Participants using key-value notation were 3.5 minutes faster than
-# participants using a natural language notation
+# d.h. KV is im schlechtesten fall 10% schneller & im schnitt 30% und im Besten Fall 54 % fall
 
 #### ACCURACY  ####
 # correctness of result from coding task (creation of video-based learning module)
