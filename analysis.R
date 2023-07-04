@@ -40,8 +40,11 @@ mydata$group.r <- factor(mydata$group.r, levels = c("bs", "as", "bp", "ap"), lab
 # log transform duration
 mydata$duration.log = log(mydata$duration.r)
 
+# boxcox transform sus
+mydata$sust = (mydata$sus^3.2-1)/3.2
+
 # the actual dataframe we'll be working with
-df <- subset(mydata, select = c("subject", "sequence", "period", "group.r", "notation.r", "duration.r", "duration.log", "accuracy", "sus", "rank.r"))
+df <- subset(mydata, select = c("subject", "sequence", "period", "group.r", "notation.r", "duration.r", "duration.log", "accuracy", "sus", "sust", "rank.r"))
 
 # write to csv so we don't need to run above lines too often
 write.csv(df, "data_prepared.csv")
