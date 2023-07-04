@@ -555,7 +555,7 @@ ggplot() +
   ylab('Mean Differences (log(TIME))') +
   xlab('Model') + theme_bw() + theme(legend.position="none",
                                      axis.title.x=element_blank(),
-                                     axis.text.x=element_text(size=16),
+                                     axis.text.x=element_text(size=12),
                                      axis.title.y=element_blank(),
                                      axis.text.y=element_blank())
 
@@ -575,7 +575,7 @@ ggplot(data=d) +
   ylab('Mean Differences (log(TIME))') +
   xlab('Model') + theme_bw() + theme(legend.position="none",
                                      axis.title.x=element_blank(),
-                                     axis.text.x=element_text(size=16),
+                                     axis.text.x=element_text(size=12),
                                      axis.title.y=element_blank(),
                                      axis.text.y=element_blank())
 
