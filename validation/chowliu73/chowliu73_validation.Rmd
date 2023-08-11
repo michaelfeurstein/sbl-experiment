@@ -1,0 +1,229 @@
+---
+title: "Validate SBL Experiment Procedure using Chow and Liu (1999)"
+output:
+  html_notebook:
+    toc: yes
+---
+
+------------------------------------------------------------------------
+
+Supplementary Material
+
+**Author: Michael S. Feurstein**
+
+------------------------------------------------------------------------
+
+Goal is to validate the [sbl-experiment](https://github.com/michaelfeurstein/sbl-experiment) analysis procedure, based on the [NCSS documentation](https://www.ncss.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Analysis_of_2x2_Cross-Over_Designs_using_T-Tests.pdf), which is using a sample dataset from [Chow and Liu (1999)](https://www.routledge.com/Design-and-Analysis-of-Bioavailability-and-Bioequivalence-Studies/Chow-Liu/p/book/9781032477770). The dataset is taken from the NCSS documentation page 234-6. It is an Analysis of 2x2 Cross-Over Design using T-Tests and ANOVA.
+
+------------------------------------------------------------------------
+
+# Preparations
+
+## Libraries
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(ggpubr)
+library(lme4)
+library(multcomp)
+library(effectsize)
+library(moments)
+```
+
+## Dataset
+
+The original dataset is taken from the NCSS documentation. See Figure 1 below.
+
+![Figure 1: ChowLiu73 Dataset (Screenshot from [NCSS documentation](https://www.ncss.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Analysis_of_2x2_Cross-Over_Designs_using_T-Tests.pdf))](ncss_dataset_original.png){width="35%"}
+
+```{r}
+df <- read.csv("dataset.csv", sep = ";", dec = ",", header = TRUE)
+```
+
+# Dataframe
+
+We added subject and treatment column and flattened the dataset.
+
+```{r}
+df
+```
+
+# Summary of data
+
+Calculate mean and standard deviation.
+
+```{r}
+df %>%
+  group_by(treatment) %>%
+  summarize(mean = mean(response), sd = sd(response))
+```
+
+------------------------------------------------------------------------
+
+# Normality tests
+
+## Visual tests
+
+Note that we have used a named mapping which resembled the original experiment. Natural language treatment is actually treatment R in NCSS documentation. Key-Value treatment is actually treatment T in NCSS documentation.
+
+```{r}
+# histogram on duration
+hist(df$response[df$treatment == "nl"], main = "Natural Language (Treatment R)", xlab = "Response")
+hist(df$response[df$treatment == "kv"], main = "Key-Value (Treatment T)", xlab = "Response")
+```
+
+## Statistical tests
+
+Note that in the NCSS documentation four different normality tests are presented for period differences per sequence. We only test Shapiro-Wilk and Skewness by D'Agostino. First the period differences need to be calculated and stored in a new data.frame called p1.
+
+```{r message=FALSE, warning=FALSE}
+p1 <- df %>%
+  group_by(subject, sequence) %>%
+  summarize(difference = response[1]-response[2])
+p1
+```
+
+**Tests of the Normality Assumption for the Period Differences in Sequence 1**
+
+```{r}
+shapiro.test(p1$difference[p1$sequence == "1"])
+agostino.test(p1$difference[p1$sequence == "1"], alternative = "two.sided")
+```
+
+**Tests of the Normality Assumption for the Period Differences in Sequence 2**
+
+```{r}
+shapiro.test(p1$difference[p1$sequence == "2"])
+agostino.test(p1$difference[p1$sequence == "2"], alternative = "two.sided")
+```
+
+**Validation:** the values from the above normality tests are the exact same as in the NCSS documentation.
+
+See the following screenshot from NCSS documentation in Figure 2 to compare values for validation check. Shapiro-Wilk and D'Agostino Skewness test p-values can be replicated.
+
+![Figure 2: Tests for Normality in NCSS documentation (Screenshot from [NCSS documentation](https://www.ncss.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Analysis_of_2x2_Cross-Over_Designs_using_T-Tests.pdf))](ncss_normality_tests.png)
+
+------------------------------------------------------------------------
+
+# Cross-over analysis
+
+Before we can do T-Tests or an ANOVA we need check for carryover effects.
+
+## Test for Period and Carryover effects
+
+Note that we were not able replicate the exact numbers. However we also failed to reject the assumption of equal period effects at the 0.05 significance level and failed to reject the assumption of equal carryover effects at the 0.05 significance level.
+
+### Period Effect
+
+Results are nearly the same.
+
+```{r}
+## two-sided, paired t-test --> period effect
+t.test(response ~ period , data = df, paired = TRUE, conf.level = 0.95, alternative = "two.sided")
+```
+
+### Carryover Effect
+
+Results are not the same as in NCSS doc.
+
+```{r}
+## two-sided, paired t-test --> carryover effect
+t.test(response ~ sequence , data = df, paired = TRUE, conf.level = 0.95, alternative = "two.sided")
+```
+
+Validation: we could not exactly replicate the numbers, however also failed to reject assumption for null hypotheses of period and carryover effects.
+
+![Figure 3: Period and Carryover Effects from NCSS Documentation (Screenshot from [NCSS documentation](https://www.ncss.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Analysis_of_2x2_Cross-Over_Designs_using_T-Tests.pdf))](ncss_period_carryover.png)
+
+------------------------------------------------------------------------
+
+# T-Test for Treatment Effect
+
+We cannot exactly replicate the values with separate T-Tests but get very close, however with a one-way ANOVA as shown below we can exactly replicate the results from the NCSS documentation. In both cases (t-tests and ANOVA) the two treatment means in a 2x2 cross-over study are not significantly different as also documented in the NCSS documentation.
+
+```{r}
+## two-sided, paired t-test
+t.test(x = df$response[df$treatment == "nl"], y = df$response[df$treatment == "kv"], paired = TRUE, conf.level = 0.95, alternative = "two.sided")
+```
+
+# Analysis of Variance (one-way ANOVA) using lmer
+
+Based on input from Thomas Rusch
+
+```{r}
+###### linear regression ####
+# based on input from Thomas Rusch
+m4<-lmer(response~treatment+factor(period)+(1|subject),data=df)
+#anova(m4)
+summary(m4)
+```
+
+Multiple Comparisons of Means: Tukey Contrasts
+
+```{r}
+summary(glht(m4, linfct=mcp(treatment="Tukey")))
+```
+
+# Analysis of Variance (one-way ANOVA) using aov
+
+Based on input from Stefan Sobernig
+
+```{r}
+model <- aov(response~treatment, data=df)
+summary(model)
+```
+
+Tukey HSD
+
+```{r}
+TukeyHSD(model, "treatment", conf.level=.95, ordered = TRUE)
+```
+
+Validation: the one-way ANOVA with lmer can replicate the results from the NCSS documentation. See Figure 4 for validation check.
+
+![Figure 4: T-Test for Treatment Effect from NCSS Documentation(Screenshot from [NCSS documentation](https://www.ncss.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Analysis_of_2x2_Cross-Over_Designs_using_T-Tests.pdf))](ncss_t_test_treatment_effect.png)
+
+------------------------------------------------------------------------
+
+# Plot of Sequence-by-Period Means
+
+Note that this plot can be replicated.
+
+```{r}
+np <- df %>%
+  group_by(treatment, period) %>%
+  summarize(mean = mean(response))
+
+pd = position_dodge(0)
+np.plot <- ggplot(np, aes(x = period,
+               y = mean,
+               color = treatment,
+               group = treatment)) +
+  geom_point(shape  = 15,
+             size   = 4,
+             position = pd) +
+  geom_line() + theme(
+    legend.position = c(.99, .99),
+    legend.justification = c("right", "top"),
+    legend.box.just = "right",
+    legend.margin = margin(4, 4, 4, 4),
+    axis.title   = element_text(face = "bold"),
+    axis.text    = element_text(face = "bold"),
+    plot.caption = element_text(hjust = 0)
+  ) +
+  scale_x_continuous(limits = c(0.5, 2.5),breaks=seq(1,2),minor_breaks=NULL) +
+  ylab("Mean Response") +
+  xlab("Period") +
+  labs(color = "Treatment")
+
+np.plot
+```
+
+See the following plot from the NCSS documentation for validation reference
+
+![Figure 3: Plot of Sequence-by-Period Means(Screenshot from [NCSS documentation](https://www.ncss.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Analysis_of_2x2_Cross-Over_Designs_using_T-Tests.pdf))](ncss_plot_seq_by_period_means.png){width="35%"}
+
+------------------------------------------------------------------------
+
+11.08.2023
