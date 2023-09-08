@@ -26,9 +26,13 @@ library(dplyr)
 library(ggplot2)
 library(ggpubr)
 library(lme4)
+require(lmerTest)
 library(multcomp)
 library(effectsize)
 library(moments)
+library(rstatix)
+library(report)
+library(DescTools)
 ```
 
 ## Dataset
@@ -82,6 +86,10 @@ p1 <- df %>%
   group_by(subject, sequence) %>%
   summarize(difference = response[1]-response[2])
 p1
+
+p1 %>%
+  group_by(sequence) %>%
+  summarize(mean = mean(difference))
 ```
 
 **Tests of the Normality Assumption for the Period Differences in Sequence 1**
@@ -90,6 +98,13 @@ p1
 shapiro.test(p1$difference[p1$sequence == "1"])
 agostino.test(p1$difference[p1$sequence == "1"], alternative = "two.sided")
 ```
+**Tests of the Normality Assumption for the Subject Totals in Sequence 1**
+
+```{r}
+shapiro.test(p2$total[p2$sequence == "1"])
+agostino.test(p2$total[p2$sequence == "1"], alternative = "two.sided")
+```
+
 
 **Tests of the Normality Assumption for the Period Differences in Sequence 2**
 
@@ -114,6 +129,14 @@ Before we can do T-Tests or an ANOVA we need check for carryover effects.
 
 Note that we were not able replicate the exact numbers. However we also failed to reject the assumption of equal period effects at the 0.05 significance level and failed to reject the assumption of equal carryover effects at the 0.05 significance level.
 
+```{r}
+p2 <- df %>%
+  group_by(subject, sequence) %>%
+  summarize(total = response[1]+response[2])
+p2
+```
+
+
 ### Period Effect
 
 Results are nearly the same.
@@ -129,8 +152,16 @@ Results are not the same as in NCSS doc.
 
 ```{r}
 ## two-sided, paired t-test --> carryover effect
-t.test(response ~ sequence , data = df, paired = TRUE, conf.level = 0.95, alternative = "two.sided")
+t.test(response ~ sequence, data = df, paired = TRUE, conf.level = 0.95, alternative = "two.sided")
 ```
+
+using totals
+
+```{r}
+## two-sided, paired t-test --> carryover effect
+t.test(total ~ sequence, data = p2, paired = TRUE, conf.level = 0.95, alternative = "two.sided")
+```
+
 
 Validation: we could not exactly replicate the numbers, however also failed to reject assumption for null hypotheses of period and carryover effects.
 
@@ -140,37 +171,92 @@ Validation: we could not exactly replicate the numbers, however also failed to r
 
 # T-Test for Treatment Effect
 
-We cannot exactly replicate the values with separate T-Tests but get very close, however with a one-way ANOVA as shown below we can exactly replicate the results from the NCSS documentation. In both cases (t-tests and ANOVA) the two treatment means in a 2x2 cross-over study are not significantly different as also documented in the NCSS documentation.
+We cannot exactly replicate the values with separate T-Tests but get very close, however with a linear mixed model as shown below we can exactly replicate the results from the NCSS documentation. In both cases (t-tests and linear mixed model) the two treatment means in a 2x2 cross-over study are not significantly different as also documented in the NCSS documentation.
 
 ```{r}
 ## two-sided, paired t-test
 t.test(x = df$response[df$treatment == "nl"], y = df$response[df$treatment == "kv"], paired = TRUE, conf.level = 0.95, alternative = "two.sided")
 ```
 
-# Analysis of Variance (one-way ANOVA) using lmer
+# Analysis of Variance (linear mixed model) using lmer
 
-Based on input from Thomas Rusch
+Based on input from Thomas Rusch (WU Vienna [Competence Center for Empirical Research Methods](https://www.wu.ac.at/en/methods/)) using a linear mixed model and a slideset (Lukas Meier: [Multiple Treatments on the Same Experimental Unit](https://ethz.ch/content/dam/ethz/special-interest/math/statistics/sfs/Education/Advanced%20Studies%20in%20Applied%20Statistics/course-material/repeatedMeasures/4_crossover.pdf)) which references [Jones and Kenward (2014)](https://doi.org/10.1201/b17537) explaining how to model a carryover effect as a sequence effect or as an interaction effect.
+
+Linear mixed model including carryover effect as a sequence effect
 
 ```{r}
-###### linear regression ####
-# based on input from Thomas Rusch
-m4<-lmer(response~treatment+factor(period)+(1|subject),data=df)
-#anova(m4)
-summary(m4)
+###### Part 1: Linear Regression (Linear Mixed Model) ####
+# based on input from Thomas Rusch + slideset from Meier
+# model as a sequence effect
+m_seq<-lmer(response~treatment+period+sequence+(1|subject),data=df)
+# Madeyski and Kitchenham actually argue to leave out sequence
+#m_seq<-lmer(response~period+treatment+(1|subject),data=df)
+#anova(m_seq)
+summary(m_seq)
+fixef(m_seq)
+
+# extract coefficients
+coefs_seq <- data.frame(coef(summary(m_seq)))
+coefs_seq$df.Satt <- coef(summary(m_seq))[, 3]
+# get approximate p-values
+coefs_seq$p.Satt <- coef(summary(m_seq))[, 5]
+coefs_seq
+```
+
+```{r}
+coefs_final <- coefs_seq
+coefs_final %>% filter(rownames(coefs_final) %in% c('treatmentnl'))
+coefs_final
+```
+
+```{r}
+anova(m_seq)
+F_to_eta2(0.3754, df = 1, df_error = 22)
+```
+
+
+Linear mixed model including carryover effect as an interaction effect
+
+```{r}
+###### Part 2: Linear Regression (Linear Mixed Model) ####
+# based on input from Thomas Rusch + slideset from Meier
+# model as an interaction effect
+m_int<-lmer(response~treatment*period+(1|subject),data=df)
+#anova(m_int)
+#summary(m_int)
+
+# extract coefficients
+coefs_int <- data.frame(coef(summary(m_int)))
+coefs_int$df.Satt <- coef(summary(m_int))[, 3]
+# get approximate p-values
+coefs_int$p.Satt <- coef(summary(m_int))[, 5]
+coefs_int
 ```
 
 Multiple Comparisons of Means: Tukey Contrasts
 
 ```{r}
-summary(glht(m4, linfct=mcp(treatment="Tukey")))
+summary(glht(m_seq, linfct=mcp(treatment="Tukey")))
+
+confint(m_seq)
 ```
+
+NOTE: continue to refine code for presentation - but in essence we replicated period and carryover effects and also the treatment effect. All from the linear mixed models.
+
+period effect is used from model based on sequence effect (m_seq)
+carryover effect is used from model based on interaction effect (m_int)
+treatment effect can be used from both models (same result)
+
+TODO: merge this into a nicer dataframe as one result.
 
 # Analysis of Variance (one-way ANOVA) using aov
 
 Based on input from Stefan Sobernig
 
 ```{r}
-model <- aov(response~treatment, data=df)
+# lmer formula: response~treatment+period+sequence+(1|subject)
+# source: https://stats.stackexchange.com/questions/71914/what-does-the-anova-command-do-with-a-lmer-model-object?newreg=9a9a41dc9b154ae09f9aec1620081ba6
+model <- aov(response~treatment+period+sequence+Error(subject/treatment), data=df)
 summary(model)
 ```
 
@@ -227,3 +313,66 @@ See the following plot from the NCSS documentation for validation reference
 ------------------------------------------------------------------------
 
 11.08.2023
+
+Effect Size 
+
+```{r}
+# R-squared
+performance::r2(m_seq)
+
+# F2 calculations
+# Source: https://joshuawiley.com/MonashHonoursStatistics/LMM_Comparison.html
+
+# Calculate conditional F2
+F2c <- (0.636^2)/(1-0.636^2)
+F2c
+
+# Calculate marginal F2
+F2m <- (0.017^2)/(1-0.017^2)
+F2m
+
+# Backup
+# Partial eta-square
+anova(m_seq)
+F_to_eta2(0.3754, df = 1, df_error = 22)
+
+# Beta coefficient
+effectsize(m_int)
+
+```
+
+Tukey HSD
+
+```{r}
+N <- 48 # sample size
+k <- 2 # number of treatments
+n <- N / k # number of samples per group
+
+# Mean Square
+plants <- split(df, df$treatment)
+
+sse <- sum(Reduce('+', lapply(plants, function(x) {
+  (length(x[,1]) - 1) * sd(x[,1])^2
+})))
+
+mse <- sse / (N - k)
+mse
+confint(m_seq)
+
+# q-value
+q.value <- qtukey(p = 0.95, nmeans = k, df = N - k)
+q.value
+
+tukey.hsd <- q.value * sqrt(mse/n)
+tukey.hsd
+
+means <- tapply(df$response, df$sequence, mean)
+trt1.ctrl.diff <- means[2] - means[1]
+trt1.ctrl.diff
+
+trt1.ctrl.diff.upper <- trt1.ctrl.diff + q.value * sqrt(mse / 2 * (2 / n))
+trt1.ctrl.diff.lower <- trt1.ctrl.diff - q.value * sqrt(mse / 2 * (2 / n))
+trt1.ctrl.diff.lower
+trt1.ctrl.diff.upper
+```
+
