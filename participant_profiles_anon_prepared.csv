@@ -1,49 +1,49 @@
 "","QUALIFICATION","QUALIFICATION.other.","OCCUPATION","OCCUPATION.other.","DISCIPLINE","experience.r","interest.r","PROGRAMMINGlangs","Author","Researcher","User","Tutor","Student","authorHOWMANYYEARS","authorHOWMANYVIDEOS","userHOWMANYYEARS","userHOWMANYCOURSES","studentHOWMANYYEARS","studentHOWMANYCOURSE","researchHOWMANYYEARS","researchHOWMANYPUB","tutorHOWMANYYEARS","tutorHOWMANYCOURSES"
-"1","Master","","Other","Librarian","Education Library and Information Science","No experience","High","","Yes","No","Yes","No","No",10,50,14,0,NA,NA,NA,NA,NA,NA
-"2","Other","Mag.","Other","Administration staff member","Education","No experience","relatively high","","No","No","Yes","Yes","No",NA,NA,11,10,NA,NA,NA,NA,11,5
-"3","PhD","","(Senior) Lecturer","","Social Sciences","Experienced","relatively high","Javascript, Python, PHP, R, C","Yes","Yes","No","No","No",15,250,NA,NA,NA,NA,10,0,NA,NA
-"4","Master","","Ph.D. student","","Business Informatics","Experienced","relatively high","Java, Python, C#, Javascript, PHP, R ","No","No","Yes","No","Yes",NA,NA,0,0,7,15,NA,NA,NA,NA
-"5","Master","","Ph.D. student","","BSc: Accounting & Controlling, MSc: Supply Chain Management","Regular","Very High","Python, R, SQL, PyTorch ","Yes","No","No","No","Yes",1,1,NA,NA,5,10,NA,NA,NA,NA
-"6","Master","","Researcher","","Business Education","No experience","Relatively low","","Yes","No","Yes","No","No",6,12,6,4,NA,NA,NA,NA,NA,NA
-"7","Master","","Other","Project employee","Business Education","Beginner","High","html C#","Yes","No","Yes","No","No",3,5,1,4,NA,NA,NA,NA,NA,NA
-"8","PhD","","Professor","","Computer Science, Human-Computer Interaction","Regular","Relatively low","Java, Javascript, PHP, Python, R","Yes","Yes","Yes","No","No",5,50,15,2,NA,NA,15,0,NA,NA
-"9","Master","","Ph.D. student","","Information Systems (Wirtschaftsinformatik)","Experienced","Very High","Python, R, Bash, Tcl, Solidity, Javascript, PHP, Java","Yes","No","No","No","Yes",1,2,NA,NA,7,9,NA,NA,NA,NA
-"10","Other","Habil","Professor","","Business Education","No experience","Low","","Yes","Yes","Yes","No","No",6,10,6,15,NA,NA,2,1,NA,NA
-"11","Master","","Ph.D. student","","Computer Science","Regular","High","Python, Java, JS, C#, PHP","Yes","No","Yes","Yes","No",2.5,10,2.5,4,NA,NA,NA,NA,3,4
-"12","Other","AHS","Bachelor student","","Matura","Beginner","relatively high","Python, Java, SQL, CSS, HTML,","Yes","No","No","No","Yes",5,4,NA,NA,5,10,NA,NA,NA,NA
-"13","PhD","","Post-doc","","Computer Science ","Expert","Very High","Around 50 languages, logic, functional, and oop Today Julia and Rust, but tach Java","Yes","No","No","No","No",7,40,NA,NA,NA,NA,NA,NA,NA,NA
-"14","PhD","","(Senior) Lecturer","","Business Administration","Regular","relatively high","R, Matlab, Gauss, Fortran, Maple","Yes","No","Yes","No","No",4,30,4,20,NA,NA,NA,NA,NA,NA
-"15","PhD","","Other","Instructional Designer","Communication Sciences","Beginner","relatively high","Pascal at school R for research (basic level)","Yes","Yes","Yes","No","No",5,10,10,50,NA,NA,10,3,NA,NA
-"16","Other","HTL MAtura","Other","Student","IT","No experience","Relatively low","","Yes","No","No","No","Yes",4,7,NA,NA,6,2,NA,NA,NA,NA
-"17","Master","","Other","Scientific coordinator","Applied linguistics","Beginner","Very low","C, Java and JavaScript","No","No","No","No","No",NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-"18","Master","","(Senior) Lecturer","","Electromechanics","No experience","Low","","Yes","Yes","Yes","No","No",3,20,8,10,NA,NA,3,0,NA,NA
-"19","Master","","Researcher","","Educational Sciences","No experience","relatively high","","No","Yes","No","No","No",NA,NA,NA,NA,NA,NA,3,1,NA,NA
-"20","PhD","","(Senior) Lecturer","","Wirtschaftsinformatik / Business Informatics","Experienced","High","Clipper, Visual Basic, C++, Pascal, XOTCL, ooRexx, PHP, HTML","Yes","No","Yes","No","No",1,20,1,2,NA,NA,NA,NA,NA,NA
-"21","PhD","","Other","Assistant Professor","Business Informatics","Regular","Relatively low","Java, C++, C#, Python, Pearl","Yes","No","Yes","No","No",2,7,5,2,NA,NA,NA,NA,NA,NA
-"22","PhD","","Researcher","","Computer Science","Experienced","relatively high","Java, Python, JavaScript, C#, C++","No","No","Yes","No","No",NA,NA,3,8,NA,NA,NA,NA,NA,NA
-"23","Bachelor","","Other","Digital Teaching Support employee & Master student","Medientechnik","Beginner","Low","Javascript, Java, C","Yes","Yes","Yes","No","Yes",7,10,10,2,8,5,1,0,NA,NA
-"24","PhD","","Professor","","Information Systems","Experienced","Very High","Java, C, C++, Python, Tcl, XoTcl, Javascript, R (and several more)","Yes","Yes","Yes","No","No",7,100,15,15,NA,NA,7,5,NA,NA
-"25","PhD","","Professor","","Electrical Engineering","Experienced","Very High","C, C++, Pascal, Delphi, Java, Python, Matlab","Yes","Yes","Yes","No","No",5,50,10,10,NA,NA,5,8,NA,NA
-"26","PhD","","(Senior) Lecturer","","Business education","No experience","Very low","","Yes","No","Yes","No","No",10,15,10,50,NA,NA,NA,NA,NA,NA
-"27","Bachelor","","Master student","","Economics","Beginner","Relatively low","R","No","No","No","No","Yes",NA,NA,NA,NA,5,5,NA,NA,NA,NA
-"28","Bachelor","","Master student","","Economics ","Regular","Relatively low","R","No","No","No","No","Yes",NA,NA,NA,NA,15,15,NA,NA,NA,NA
-"29","Other","Matura","Bachelor student","","Business and Marketing","Regular","High","Python C# C++ Java Stata SQL VBA PowerQuery(M)","No","No","No","No","Yes",NA,NA,NA,NA,4,10,NA,NA,NA,NA
-"30","Bachelor","","Master student","","Economics","Regular","relatively high","R","No","No","Yes","No","Yes",NA,NA,4,0,7,10,NA,NA,NA,NA
-"31","Other","Matura ","Other","student ","In languages ","No experience","Relatively low","","No","No","Yes","No","No",NA,NA,5,1,NA,NA,NA,NA,NA,NA
-"32","Other","Matura","Bachelor student","","Mathematics and IT","Experienced","High","C++, R studio","No","No","No","Yes","Yes",NA,NA,NA,NA,13,17,NA,NA,0,0
-"33","Bachelor","","Master student","","Business Information Systems","Beginner","relatively high","R, Python","No","No","No","No","Yes",NA,NA,NA,NA,5,20,NA,NA,NA,NA
-"34","Master","","Master student","","International Shipping and Transport Logistics","No experience","High","","No","No","No","No","Yes",NA,NA,NA,NA,10,3,NA,NA,NA,NA
-"35","Bachelor","","Master student","","Electrical Engineering","Regular","Low","C, C++, Java, HTML/CSS, Matlab","No","No","No","No","Yes",NA,NA,NA,NA,8,10,NA,NA,NA,NA
-"36","Bachelor","","Bachelor student","","Business and Economics","Regular","relatively high","R, stata","No","No","No","No","Yes",NA,NA,NA,NA,2,20,NA,NA,NA,NA
-"37","Bachelor","","Master student","","Business Administration","Experienced","High","R, Python, SQL, Stata","No","No","No","No","Yes",NA,NA,NA,NA,19,10,NA,NA,NA,NA
-"38","Bachelor","","Master student","","Life sciences ","No experience","relatively high","","No","No","No","No","Yes",NA,NA,NA,NA,4,0,NA,NA,NA,NA
-"39","Bachelor","","Bachelor student","","Business and information systems ","Beginner","Relatively low","Python, R","No","No","Yes","No","No",NA,NA,3,5,NA,NA,NA,NA,NA,NA
-"40","Master","","Ph.D. student","","Business Education","No experience","relatively high","","Yes","No","No","No","No",2,6,NA,NA,NA,NA,NA,NA,NA,NA
-"41","Bachelor","","Other","Administrative Assistant","Business and Economics","No experience","Relatively low","","No","No","Yes","No","No",NA,NA,4,20,NA,NA,NA,NA,NA,NA
-"42","Bachelor","","Master student","","Computer science engineering","Beginner","Very low","Java,  c","No","No","No","No","Yes",NA,NA,NA,NA,16,4,NA,NA,NA,NA
-"43","Other","Matura","Bachelor student","","/","No experience","Relatively low","","No","No","No","No","Yes",NA,NA,NA,NA,NA,10,NA,NA,NA,NA
-"44","Other","High school diploma","Bachelor student","","Business, Economics and Social Sciences","Regular","High","Java","No","No","Yes","No","Yes",NA,NA,1,2,1,5,NA,NA,NA,NA
-"45","Other","High school diploma","Bachelor student","","General education","Regular","Very High","R, Python","No","No","No","No","Yes",NA,NA,NA,NA,17,10,NA,NA,NA,NA
-"46","Other","Abitur","Bachelor student","","General qualification ","Beginner","relatively high","R, Python, Html","No","No","No","No","Yes",NA,NA,NA,NA,2,20,NA,NA,NA,NA
-"47","Bachelor","","Master student","","Business Informatics","Regular","relatively high","R, Python, Javascript","No","No","No","No","Yes",NA,NA,NA,NA,6,30,NA,NA,NA,NA
-"48","Bachelor","","Master student","","Business administration","Regular","High","R (I’m a QFin student) , the very basics of Python and STATA (which I personally wouldn’t call programming language). So I just used them for QFin related things. ","No","No","No","No","Yes",NA,NA,NA,NA,4,6,NA,NA,NA,NA
+"1","Master","","Other","Librarian","Education Library and Information Science","No experience","High","","Yes","No","Yes","No","No","10","50","14","0","",NA,NA,NA,NA,NA
+"2","Other","Mag.","Other","Administration staff member","Education","No experience","relatively high","","No","No","Yes","Yes","No",NA,NA,"11","10","",NA,NA,NA,"11","5"
+"3","PhD","","(Senior) Lecturer","","Social Sciences","Experienced","relatively high","Javascript, Python, PHP, R, C","Yes","Yes","No","No","No","15","250",NA,NA,"",NA,"10","0",NA,NA
+"4","Master","","Ph.D. student","","Business Informatics","Experienced","relatively high","Java, Python, C#, Javascript, PHP, R ","No","No","Yes","No","Yes",NA,NA,"0","0","7","15",NA,NA,NA,NA
+"5","Master","","Ph.D. student","","BSc: Accounting & Controlling, MSc: Supply Chain Management","Regular","Very High","Python, R, SQL, PyTorch ","Yes","No","No","No","Yes","1","1",NA,NA,"5","10",NA,NA,NA,NA
+"6","Master","","Researcher","","Business Education","No experience","Relatively low","","Yes","No","Yes","No","No","6","12","6","4","",NA,NA,NA,NA,NA
+"7","Master","","Other","Project employee","Business Education","Beginner","High","html C#","Yes","No","Yes","No","No","3","5","1","4","",NA,NA,NA,NA,NA
+"8","PhD","","Professor","","Computer Science, Human-Computer Interaction","Regular","Relatively low","Java, Javascript, PHP, Python, R","Yes","Yes","Yes","No","No","5","50","15","2","",NA,"15","0",NA,NA
+"9","Master","","Ph.D. student","","Information Systems (Wirtschaftsinformatik)","Experienced","Very High","Python, R, Bash, Tcl, Solidity, Javascript, PHP, Java","Yes","No","No","No","Yes","1","2",NA,NA,"7","9",NA,NA,NA,NA
+"10","Other","Habil","Professor","","Business Education","No experience","Low","","Yes","Yes","Yes","No","No","6","10","6","15","",NA,"2","1",NA,NA
+"11","Master","","Ph.D. student","","Computer Science","Regular","High","Python, Java, JS, C#, PHP","Yes","No","Yes","Yes","No","2.5","10","2.5","4","",NA,NA,NA,"3","4"
+"12","Other","AHS","Bachelor student","","Matura","Beginner","relatively high","Python, Java, SQL, CSS, HTML,","Yes","No","No","No","Yes","5","4",NA,NA,"5","10",NA,NA,NA,NA
+"13","PhD","","Post-doc","","Computer Science ","Expert","Very High","Around 50 languages, logic, functional, and oop Today Julia and Rust, but tach Java","Yes","No","No","No","No","7","40",NA,NA,"",NA,NA,NA,NA,NA
+"14","PhD","","(Senior) Lecturer","","Business Administration","Regular","relatively high","R, Matlab, Gauss, Fortran, Maple","Yes","No","Yes","No","No","4","30","4","20","",NA,NA,NA,NA,NA
+"15","PhD","","Other","Instructional Designer","Communication Sciences","Beginner","relatively high","Pascal at school R for research (basic level)","Yes","Yes","Yes","No","No","5","10","10","50","",NA,"10","3",NA,NA
+"16","Other","HTL MAtura","Other","Student","IT","No experience","Relatively low","","Yes","No","No","No","Yes","4","7",NA,NA,"6","2",NA,NA,NA,NA
+"17","Master","","Other","Scientific coordinator","Applied linguistics","Beginner","Very low","C, Java and JavaScript","No","No","No","No","No",NA,NA,NA,NA,"",NA,NA,NA,NA,NA
+"18","Master","","(Senior) Lecturer","","Electromechanics","No experience","Low","","Yes","Yes","Yes","No","No","3","20","8","10","",NA,"3","0",NA,NA
+"19","Master","","Researcher","","Educational Sciences","No experience","relatively high","","No","Yes","No","No","No",NA,NA,NA,NA,"",NA,"3","1",NA,NA
+"20","PhD","","(Senior) Lecturer","","Wirtschaftsinformatik / Business Informatics","Experienced","High","Clipper, Visual Basic, C++, Pascal, XOTCL, ooRexx, PHP, HTML","Yes","No","Yes","No","No","1","20","1","2","",NA,NA,NA,NA,NA
+"21","PhD","","Other","Assistant Professor","Business Informatics","Regular","Relatively low","Java, C++, C#, Python, Pearl","Yes","No","Yes","No","No","2","7","5","2","",NA,NA,NA,NA,NA
+"22","PhD","","Researcher","","Computer Science","Experienced","relatively high","Java, Python, JavaScript, C#, C++","No","No","Yes","No","No",NA,NA,"3","8","",NA,NA,NA,NA,NA
+"23","Bachelor","","Other","Digital Teaching Support employee & Master student","Medientechnik","Beginner","Low","Javascript, Java, C","Yes","Yes","Yes","No","Yes","7","10","10","2","8","5","1","0",NA,NA
+"24","PhD","","Professor","","Information Systems","Experienced","Very High","Java, C, C++, Python, Tcl, XoTcl, Javascript, R (and several more)","Yes","Yes","Yes","No","No","7","100","15","15","",NA,"7","5",NA,NA
+"25","PhD","","Professor","","Electrical Engineering","Experienced","Very High","C, C++, Pascal, Delphi, Java, Python, Matlab","Yes","Yes","Yes","No","No","5","50","10","10","",NA,"5","8",NA,NA
+"26","PhD","","(Senior) Lecturer","","Business education","No experience","Very low","","Yes","No","Yes","No","No","10","15","10","50","",NA,NA,NA,NA,NA
+"27","Bachelor","","Master student","","Economics","Beginner","Relatively low","R","No","No","No","No","Yes",NA,NA,NA,NA,"5","5",NA,NA,NA,NA
+"28","Bachelor","","Master student","","Economics ","Regular","Relatively low","R","No","No","No","No","Yes",NA,NA,NA,NA,"15","15",NA,NA,NA,NA
+"29","Other","Matura","Bachelor student","","Business and Marketing","Regular","High","Python C# C++ Java Stata SQL VBA PowerQuery(M)","No","No","No","No","Yes",NA,NA,NA,NA,"4","10",NA,NA,NA,NA
+"30","Bachelor","","Master student","","Economics","Regular","relatively high","R","No","No","Yes","No","Yes",NA,NA,"4","0","7","10",NA,NA,NA,NA
+"31","Other","Matura ","Other","student ","In languages ","No experience","Relatively low","","No","No","Yes","No","No",NA,NA,"5","1","",NA,NA,NA,NA,NA
+"32","Other","Matura","Bachelor student","","Mathematics and IT","Experienced","High","C++, R studio","No","No","No","Yes","Yes",NA,NA,NA,NA,"13","17",NA,NA,"0","0"
+"33","Bachelor","","Master student","","Business Information Systems","Beginner","relatively high","R, Python","No","No","No","No","Yes",NA,NA,NA,NA,"5","20",NA,NA,NA,NA
+"34","Master","","Master student","","International Shipping and Transport Logistics","No experience","High","","No","No","No","No","Yes",NA,NA,NA,NA,"10","3",NA,NA,NA,NA
+"35","Bachelor","","Master student","","Electrical Engineering","Regular","Low","C, C++, Java, HTML/CSS, Matlab","No","No","No","No","Yes",NA,NA,NA,NA,"8","10",NA,NA,NA,NA
+"36","Bachelor","","Bachelor student","","Business and Economics","Regular","relatively high","R, stata","No","No","No","No","Yes",NA,NA,NA,NA,"2","20",NA,NA,NA,NA
+"37","Bachelor","","Master student","","Business Administration","Experienced","High","R, Python, SQL, Stata","No","No","No","No","Yes",NA,NA,NA,NA,"19","10",NA,NA,NA,NA
+"38","Bachelor","","Master student","","Life sciences ","No experience","relatively high","","No","No","No","No","Yes",NA,NA,NA,NA,"4","0",NA,NA,NA,NA
+"39","Bachelor","","Bachelor student","","Business and information systems ","Beginner","Relatively low","Python, R","No","No","Yes","No","No",NA,NA,"3","5","",NA,NA,NA,NA,NA
+"40","Master","","Ph.D. student","","Business Education","No experience","relatively high","","Yes","No","No","No","No","2","6",NA,NA,"",NA,NA,NA,NA,NA
+"41","Bachelor","","Other","Administrative Assistant","Business and Economics","No experience","Relatively low","","No","No","Yes","No","No",NA,NA,"4","20","",NA,NA,NA,NA,NA
+"42","Bachelor","","Master student","","Computer science engineering","Beginner","Very low","Java,  c","No","No","No","No","Yes",NA,NA,NA,NA,"16","4",NA,NA,NA,NA
+"43","Other","Matura","Bachelor student","","/","No experience","Relatively low","","No","No","No","No","Yes",NA,NA,NA,NA,"01.May","10",NA,NA,NA,NA
+"44","Other","High school diploma","Bachelor student","","Business, Economics and Social Sciences","Regular","High","Java","No","No","Yes","No","Yes",NA,NA,"1","2","1","5",NA,NA,NA,NA
+"45","Other","High school diploma","Bachelor student","","General education","Regular","Very High","R, Python","No","No","No","No","Yes",NA,NA,NA,NA,"17","10",NA,NA,NA,NA
+"46","Other","Abitur","Bachelor student","","General qualification ","Beginner","relatively high","R, Python, Html","No","No","No","No","Yes",NA,NA,NA,NA,"2","20",NA,NA,NA,NA
+"47","Bachelor","","Master student","","Business Informatics","Regular","relatively high","R, Python, Javascript","No","No","No","No","Yes",NA,NA,NA,NA,"6","30",NA,NA,NA,NA
+"48","Bachelor","","Master student","","Business administration","Regular","High","R (I’m a QFin student) , the very basics of Python and STATA (which I personally wouldn’t call programming language). So I just used them for QFin related things. ","No","No","No","No","Yes",NA,NA,NA,NA,"4","6",NA,NA,NA,NA
