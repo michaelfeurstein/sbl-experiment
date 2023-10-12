@@ -1,0 +1,522 @@
+---
+title: "SBL Experiment Analysis"
+output:
+  html_notebook:
+    toc: yes
+---
+
+------------------------------------------------------------------------
+
+# Supplementary Material Chapter 6
+
+**Author:** Michael S. Feurstein\
+**Last compiled:** `r format(Sys.time(), '%d %B, %Y')`
+
+------------------------------------------------------------------------
+
+## About this notebook
+
+This notebook is a supplementary material for Chapter 6 "A Controlled Experiment" used for replication of results. All steps and calculations have been validated through replication of a documented example in the [NCSS documentation Chapter 234](https://www.ncss.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Analysis_of_2x2_Cross-Over_Designs_using_T-Tests.pdf), which uses data (again validated) from [Chow and Liu (1999)](https://www.routledge.com/Design-and-Analysis-of-Bioavailability-and-Bioequivalence-Studies/Chow-Liu/p/book/9781032477770). All further details on experiment design, methodology and analysis procedure can be found in Chapter 6 of thesis.
+
+------------------------------------------------------------------------
+
+## Preparations
+
+We need several libraries for our analysis. Library ***dplyr*** is mainly used for data manipulation (e.g. summarise(), group_by()) and data transformation using pipes (e.g. %\>%) by magrittr. Library ***ggplot2*** is mainly used for additional plotting needs such as stacked bar plots, interaction plots and Tukey HSD confidence interval plots.
+
+### Libraries
+
+```{r}
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+library(ggpubr)
+library(lme4)
+library(multcomp)
+library(effectsize)
+library(moments)
+library(lemon)
+library(stringr)
+```
+
+### Load Data
+
+Transformations and other preparation steps can be found in the [analysis.R](https://github.com/michaelfeurstein/sbl-experiment/blob/main/analysis.R) file. Here we simply load the already prepared data for the actual analysis steps performed.
+
+The following imported file named ***"data_prepared.csv"*** contains all main measurements (duration, accuracy, sus-score).
+
+```{r}
+# read from prepared csv
+df <- read.csv("data_prepared.csv")
+```
+
+The following im ***participant_profiles_anon_prepared.csv*** contains all anonymized data on participants and their profile (programming experience, programming interest, qualification etc.)
+
+```{r}
+# read from prepared csv
+profiledata <- read.csv("participant_profiles_anon_prepared.csv")
+```
+
+The following imported file named ***"accuracy_features_flat_prepared.csv"*** contains all detailed measurements of the feature accuracy (1st part of the calculation for accuracy).
+
+```{r}
+# read from prepared csv
+f_data <- read.csv("accuracy_features_flat_prepared.csv")
+```
+
+The following imported file named ***"accuracy_quality_flat_prepared.csv"*** contains all detailed measurements of the quality accuracy (2nd part of the calculation for accuracy).
+
+```{r}
+# read from prepared csv
+q_data <- read.csv("accuracy_quality_flat_prepared.csv")
+```
+
+The following imported files named ***"sus_cnl_likert_tidy.csv"*** and ***"sus_kv_likert_tidy.csv"*** contain the Likert responses from the Standardized System Usability Scale (SUS). Note that these values are **NOT** to be confused with the calculated SUS scores. These are the 5-point Likert responses ranging from Strongly Disagree to Strongly Agree.
+
+Importing CNL SUS responses
+
+```{r}
+# read CNL SUS responses from prepared tidy csv
+sus_cnl_data_tidy <- read.csv("sus_details/sus_cnl_likert_tidy.csv")
+# remove the imported X column - we don't need it. It was created during write.csv process
+sus_cnl_data_tidy <- subset(sus_cnl_data_tidy, select = -c(X))
+```
+
+Importing KV SUS responses
+
+```{r}
+# read KV SUS responses from prepared tidy csv
+sus_kv_data_tidy <- read.csv("sus_details/sus_kv_likert_tidy.csv")
+# remove the imported X column - we don't need it. It was created during write.csv process
+sus_kv_data_tidy <- subset(sus_kv_data_tidy, select = -c(X))
+```
+
+The following imported file named ***"ranking_preference.csv"*** contains the personal preference for a specific notation (CNL, KV or no preference). If a participant specified "don't know" or ranked both notations on the same level (1st or 2nd rank) the data point was converted to no preference.
+
+```{r}
+dfr <- read.csv("ranking_preference.csv", sep = ";", dec = ",", header = TRUE)
+```
+
+## Descriptive Statistics
+
+The following steps are in line with the chronological order of Chapter 6, Section 6.3.1 Descriptive Statistics.
+
+### Participants
+
+#### Qualification
+
+```{r}
+# produce a table from Qual_fac
+qual_table <- table(profiledata$Qual_fac)
+# use prop.table to calcualte percentages
+qual_table_prop <- prop.table(qual_table)
+# number count
+qual_table
+# fractions
+qual_table_prop
+```
+
+#### Occupation
+
+```{r}
+occu_table <- table(profiledata$Occu_fac)
+occu_table_prop <- round((prop.table(occu_table) * 100),2)
+
+# generate boxplot
+par(mar=c(3, 8, 3, 0))
+bp <- barplot(occu_table, main="Occupation",horiz=T , las=1, xlim=c(0,13))
+text(occu_table, bp,  occu_table_prop, labels = paste(occu_table_prop, '%'), pos = 4, cex = 0.8)
+```
+
+#### Profile
+
+```{r}
+# Participant Profiles ####
+authors <- colSums(profiledata == "Yes")
+profile_columns = c("Profile","Frequency") 
+df_p = data.frame(matrix(nrow = 0, ncol = length(profile_columns))) 
+colnames(df_p) = profile_columns
+df_p[nrow(df_p) + 1,] = c("Author",authors["Author"])
+df_p[nrow(df_p) + 1,] = c("Researcher",authors["Researcher"])
+df_p[nrow(df_p) + 1,] = c("User",authors["User"])
+df_p[nrow(df_p) + 1,] = c("Tutor",authors["Tutor"])
+df_p[nrow(df_p) + 1,] = c("Student",authors["Student"])
+
+# convert frequency column into numeric format
+df_p$Frequency = as.numeric(as.character(df_p$Frequency))
+
+# order dataframe ascending
+# this way it's displayed descending in horizontal barplot
+desc_df_p <- df_p[order(df_p$Frequency),] 
+
+# plot barplot
+counts <- table(df_p$Frequency)
+par(mar=c(3, 6, 3, 1))
+profile_plot <- barplot(height=desc_df_p$Frequency, names=desc_df_p$Profile, main="Participant Profiles", horiz=T,las=1,xlim=c(0,25),width = c(2,2,2,2,2))
+text(x=desc_df_p$Frequency, profile_plot, labels = paste(desc_df_p$Frequency), pos=4, offset=0.3, xpd=T)
+```
+
+### Dependent Variables
+
+#### Efficiency (Duration)
+
+**Boxplot:** Visual inspection of data, using a boxplot.
+
+```{r}
+##### boxplot ####
+par(mar=c(5, 5, 3, 2))
+bp_duration <- boxplot(duration.r ~ notation.r, main = "Duration", data = df, ylab = "Duration (in min.)", xlab = "Notation", names = c("KV","CNL"))
+```
+
+**Summary:** For reporting of mean (min, q1, mdn, q2, max) and sd:
+
+```{r}
+# using measured duration in minutes
+df %>%
+  group_by(notation.r) %>%
+  summarize(mean_duration = mean(duration.r), sd_duration = sd(duration.r), min_duration = min(duration.r), max_duration = max(duration.r), med_duration = median(duration.r), q1 = quantile(duration.r, 0.25), q3 = quantile(duration.r, 0.75))
+```
+
+**Mean Difference:** For reporting of unstandardized mean difference:
+
+```{r}
+##### mean difference ####
+# values
+m.nl <- mean(df$duration.r[df$notation.r == "natural language"])
+m.kv <- mean(df$duration.r[df$notation.r == "key-value"])
+# unstandardized mean difference between cnl kv
+diffnlkv <- m.nl-m.kv
+# avergae of nl kv
+avgnlkv <- (m.nl+m.kv)/2
+rationlkv <- diffnlkv/avgnlkv
+# percentage
+percent_diff_nlkv <- rationlkv*100
+print(c("mean difference in percentage: ", percent_diff_nlkv))
+```
+
+#### Effectiveness (Accuracy)
+
+**Boxplot:** Visual inspection of data, using a boxplot.
+
+```{r}
+par(mar=c(5, 5, 3, 2))
+boxplot(accuracy ~ notation.r, main = "Accuracy", data = df, xlab = "Notation", ylab = "Accuracy (in percent)", names = c("KV","CNL"))
+```
+
+**Summary:** For reporting of mean (min, q1, mdn, q2, max) and sd:
+
+```{r}
+df %>%
+  group_by(notation.r) %>%
+  summarize(mean = mean(accuracy), sd = sd(accuracy), min = min(accuracy), max = max(accuracy), med = median(accuracy), q1 = quantile(accuracy, 0.25), q3 = quantile(accuracy, 0.75))
+```
+
+Additional reports on proportions of 0% and 100% accuracy
+
+```{r}
+## percentages of 0% accuracy and 100% accuracy
+cnl <- table(df$accuracy[df$notation.r == "natural language"])
+cnl_p <- prop.table(cnl)
+
+# number count
+cnl
+# fractions
+cnl_p
+
+kv <- table(df$accuracy[df$notation.r == "key-value"])
+kv_p <- prop.table(min_table)
+
+# number count
+kv
+# fractions
+kv_p
+```
+
+**Mean Difference:** For reporting of unstandardized mean difference:
+
+```{r}
+##### mean difference ####
+# values
+accuracy_nl <- mean(df$accuracy[df$notation.r == "natural language"])
+accuracy_kv <- mean(df$accuracy[df$notation.r == "key-value"])
+# difference between nl kv: nl-kv
+accuracy_diffnlkv <- accuracy_nl-accuracy_kv
+# avergae of nl kv
+accuracy_avgnlkv <- (accuracy_nl+accuracy_kv)/2
+accuracy_rationlkv <- accuracy_diffnlkv/accuracy_avgnlkv
+# percentage
+accuracy_percent_diff_nlkv <- abs(accuracy_rationlkv*100)
+print(c("mean difference in percentage: ", accuracy_percent_diff_nlkv))
+```
+
+**Stacked Bar plots:** Detailed Accuracy Feature
+
+Following the regular descriptive reports, here we present detailed descriptive data about the number of features being implemented or not. This data is not included in the hypothesis tests or in any research questions. It simply shows where "errors" occured or things went wrong in terms of not implementing features or not adhering to quality standards.
+
+Note that the facet labels are referenced from Table 6.2 (thesis; see also [github/sbl-experiment/docs/features.md](https://github.com/michaelfeurstein/sbl-experiment/blob/main/docs/features.md))
+
+```{r}
+# New facet label names for dose variable
+feature_f.labels <- c("F1[a]", "F2[a]", "F2[b]", "F2[c]", "F2[d]", "F2[e]", "F3[a]", "F3[b]", "F4[a]", "F4[b]", "F4[c]", "F4[d]", "F4[e]", "F4[f]", "F4[g]", "F5[a]", "F5[b]")
+names(feature_f.labels) <- c("f1a", "f2a", "f2b", "f2c", "f2d", "f2e", "f3a", "f3b", "f4a", "f4b", "f4c", "f4d", "f4e", "f4f", "f4g", "f5a", "f5b")
+
+# Draw barplot with grouping & stacking
+ggplot(f_data,
+        aes(x = notation, y = value, fill = accuracy)) +
+        geom_bar(stat = "identity", position = "stack") +
+        facet_grid(cols = vars(feature), labeller = labeller(feature = feature_f.labels, .default = label_parsed)) +
+  scale_y_continuous(labels = function(x) paste0(x, "%")) +
+  scale_x_discrete(labels = c("kv","cnl")) +
+  scale_fill_manual(values = c("#91cf60","#fc8d59")) +
+  geom_text(aes(label = paste0(round(value, digits = 0),"%")),
+            position = position_stack(),
+            hjust = 1.2,
+            vjust = 0.5,
+            angle = 90,
+            size = 2.5) + 
+  ggtitle("Detailed accuracy (in %) for features implemented") +
+  xlab("Notation") +
+  ylab("Accuracy") +
+  labs(fill="Feature\nimplemented") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5))
+```
+
+**Stacked Bar plots:** Detailed Accuracy Quality
+
+```{r}
+# New facet label names for dose variable
+feature_q.labels <- c("Q[1]", "Q[2]", "Q[3]", "Q[4]", "Q[5]", "Q[6]")
+names(feature_q.labels) <- c("q1", "q2", "q3", "q4", "q5", "q6")
+
+# plot
+ggplot(q_data,
+        aes(x = notation, y = value, fill = accuracy)) +
+        geom_bar(stat = "identity", position = "stack") +
+        facet_grid(cols = vars(feature), labeller = labeller(feature = feature_q.labels, .default = label_parsed)) +
+        scale_y_continuous(labels = function(x) paste0(x, "%")) +
+        scale_x_discrete(labels = c("kv","cnl")) +
+        scale_fill_manual(values = c("#91cf60","#fc8d59")) +
+        geom_text(aes(label = paste0(round(value, digits = 0),"%")),
+            position = position_stack(),
+            hjust = 1.2,
+            vjust = 0.5,
+            angle = 90,
+            size = 3) + 
+  ggtitle("Detailed accuracy (in %) for quality criteria compliance") +
+  xlab("Notation") +
+  ylab("Accuracy") +
+  labs(fill="Quality Criteria\ncompliant")
+```
+
+#### System Usability Scale (Usability)
+
+**Boxplot:** Visual inspection of data, using a boxplot.
+
+```{r}
+par(mar=c(5, 5, 3, 2))
+boxplot(sus ~ notation.r, data = df, main = "Usability (System Usability Scale)", xlab = "Notation", ylab = "SUS score", names = c("KV","CNL"))
+```
+
+**Summary:** For reporting of mean (min, q1, mdn, q2, max) and sd:
+
+```{r}
+df %>%
+  group_by(notation.r) %>%
+  summarize(mean = mean(sus), sd = sd(sus), min = min(sus), max = max(sus), med = median(sus), q1 = quantile(sus, 0.25), q3 = quantile(sus, 0.75))
+```
+
+**Mean Difference:** For reporting of unstandardized mean difference:
+
+```{r}
+##### mean difference ####
+# values
+sus_nl <- mean(df$sus[df$notation.r == "natural language"])
+sus_kv <- mean(df$sus[df$notation.r == "key-value"])
+# difference between nl kv: nl-kv
+sus_diffnlkv <- sus_nl-sus_kv
+# avergae of nl kv
+sus_avgnlkv <- (sus_nl+sus_kv)/2
+sus_rationlkv <- sus_diffnlkv/sus_avgnlkv
+# percentage
+sus_percent_diff_nlkv <- abs(sus_rationlkv*100)
+print(c("mean difference in percentage: ", sus_percent_diff_nlkv))
+```
+
+**Stacked Bar plots:** Detailed response results to the individual SUS questions
+
+The following stacked bar plots have been used and reported by Ivanchikj et al. (2020) (see [References] and [DOI](https://doi.org/10.1145/3365438.3410990)). For the purpose of this thesis the style and reporting has been replicated with our data.
+
+**Stacked Bar plots:** Likert Responses for Usability Questionnaire on Controlled-Natural Language Notation
+
+```{r}
+# First we use mutate and factor to bring questions (PQ and NQ) into desired order for plotting
+sus_cnl_data_tidy <- sus_cnl_data_tidy %>% mutate(question = factor(question, 
+    levels = c("PQ5. I would feel very confident using the notation.",
+               "PQ4. I would imagine that most people would learn to use this notation very quickly.",
+               "PQ3. I find the various functions in this notation are well integrated.",
+               "PQ2. I think the notation would be easy to use.",
+               "PQ1. I think that I would like to use this notation frequently.",
+               "NQ5. I would need to learn a lot of things before I could get going with this notation.",
+               "NQ4. I would find the notation very cumbersome to use.",
+               "NQ3. I think there is too much inconsistency in this notation.",
+               "NQ2. I think that I would need the support of a technical person to be able to use this notation.",
+               "NQ1. I find the notation unnecessarily complex.")))
+
+# Then we factorize the Likert answer scale
+sus_cnl_data_tidy <- sus_cnl_data_tidy %>% mutate(answer = factor(answer, 
+               levels = c('Strongly Disagree','Disagree','Neutral','Agree','Strongly Agree')))
+
+# In preparation for plotting we setup a function to define a limit width for strings wrapped
+# Source juliasilge (comment on github from Oct 4, 2022)
+# Link: https://github.com/juliasilge/tidytext/issues/222
+custom_labeler <- function(x) {
+  x %>%
+    str_replace("___.+$", "") %>%
+    str_wrap(width = 50)
+}
+
+# The actual plot code using ggplot2
+ggplot(sus_cnl_data_tidy, aes(x=question, fill=answer)) + 
+  geom_bar(width = 0.7, position = position_stack(reverse = TRUE)) + 
+  scale_fill_manual(values=c("darkred","red", "grey", "darkolivegreen1", "darkgreen")) +
+  scale_y_continuous(expand = expansion(0)) +
+  theme_bw() +
+  theme(axis.text.y=element_text(hjust=0), axis.title.y = element_blank(), axis.title.x =element_blank(), legend.position = "bottom", legend.justification = c(1,1), legend.title = element_blank()) +
+  facet_rep_grid(notion ~ ., scales = "free", repeat.tick.labels = "all") +
+  scale_x_discrete(labels = custom_labeler) +
+  coord_capped_cart(bottom="both", left="both") +
+  coord_flip()
+```
+
+**Stacked Bar plots:** Likert Responses for Usability Questionnaire on Key-Value Notation
+
+```{r}
+# First we use mutate and factor to bring questions (PQ and NQ) into desired order for plotting
+
+sus_kv_data_tidy <- sus_kv_data_tidy %>% mutate(question = factor(question, 
+    levels = c("PQ5. I would feel very confident using the notation.",
+               "PQ4. I would imagine that most people would learn to use this notation very quickly.",
+               "PQ3. I find the various functions in this notation are well integrated.",
+               "PQ2. I think the notation would be easy to use.",
+               "PQ1. I think that I would like to use this notation frequently.",
+               "NQ5. I would need to learn a lot of things before I could get going with this notation.",
+               "NQ4. I would find the notation very cumbersome to use.",
+               "NQ3. I think there is too much inconsistency in this notation.",
+               "NQ2. I think that I would need the support of a technical person to be able to use this notation.",
+               "NQ1. I find the notation unnecessarily complex.")))
+
+# Then we factorize the Likert answer scale
+sus_kv_data_tidy <- sus_kv_data_tidy %>% mutate(answer = factor(answer, 
+              levels = c('Strongly Disagree','Disagree','Neutral','Agree','Strongly Agree')))
+
+# In preparation for plotting we setup a function to define a limit width for strings wrapped
+# Source juliasilge (comment on github from Oct 4, 2022)
+# Link: https://github.com/juliasilge/tidytext/issues/222
+custom_labeler <- function(x) {
+  x %>%
+    str_replace("___.+$", "") %>%
+    str_wrap(width = 50)
+}
+
+# The actual plot code using ggplot2
+ggplot(sus_kv_data_tidy, aes(x=question, fill=answer)) + 
+  geom_bar(width = 0.7, position = position_stack(reverse = TRUE)) + 
+  scale_fill_manual(values=c("darkred","red", "grey", "darkolivegreen1", "darkgreen")) +
+  scale_y_continuous(expand = expansion(0)) +
+  theme_bw() +
+  theme(axis.text.y=element_text(hjust=0), axis.title.y = element_blank(), axis.title.x =element_blank(), legend.position = "bottom", legend.justification = c(1,1), legend.title = element_blank()) +
+  facet_rep_grid(notion ~ ., scales = "free", repeat.tick.labels = "all") +
+  scale_x_discrete(labels = custom_labeler) +
+  coord_capped_cart(bottom="both", left="both") +
+  coord_flip()
+
+```
+
+#### Ranking (Personal Preference)
+
+**Barplot:** Visual inspection of data, using a barplot.
+
+```{r}
+# Define a desired order manually
+desired_order <- c("preferNL","nopref","preferKV")
+# Reorder levels
+dfr$preference <- factor( as.character(dfr$preference), levels=desired_order )
+# Reorder dataframe
+dfr <- dfr[order(dfr$preference),]
+
+# Prepare counts for barplot
+counts <- table(dfr$preference)
+
+# Barplot
+b<-barplot(counts, main="Ranking (Personal Preference)",
+        xlab="Preference for a notation",names.arg=c("CNL", "No Preference", "KV"),ylim=range(pretty(c(0, counts))))
+
+# Set text inside barplots
+text(b, counts - 1.5, paste0(sprintf("%4.1f ", counts / sum(counts) * 100), "%", sprintf(" (%d)",counts)), font=1, col=c("black"), cex = 0.9)
+```
+
+## Results and Hypothesis Tests
+
+The following steps are in line with the chronological order of Chapter 6, Section 6.3.2 Results and Hypothesis Tests.				
+
+For the analysis of the effects of the two treatments, the difference of the measurements taken in Period 1 and 2 are used (Chapter 6, Section 6.1.8). We therefore calculate the period differences for each sequence. This step has been validated with calculations in [Validate SBL Experiment Procedure using Chow and Liu (1999)](https://github.com/michaelfeurstein/sbl-experiment/blob/main/validation/chowliu73/chowliu73_validation.Rmd).
+
+```{r}
+p1 <- df %>%
+  group_by(subject, sequence) %>%
+  summarize(difference = duration.log[1]-duration.log[2])
+p1
+
+p1 %>%
+  group_by(sequence) %>%
+  summarize(mean = mean(difference))
+```
+
+### Tests of Normality
+
+#### Efficiency (Duration)
+
+Two types of visual inspections (histograms and qq-plots) and two types of statistical tests (Shapiro-Wilk and Skewness-Test)
+
+**Histogram**
+
+```{r}
+##### histogram ####
+hist(df$duration.r[df$notation.r == "natural language"])
+hist(df$duration.log[df$notation.r == "natural language"])
+
+hist(df$duration.r[df$notation.r == "key-value"])
+hist(df$duration.log[df$notation.r == "key-value"])
+```
+
+**QQ-Plots**
+
+```{r}
+qqnorm(df$duration.log[df$notation.r == "natural language"], pch = 1, frame = FALSE)
+qqline(df$duration.log[df$notation.r == "natural language"], col = "steelblue", lwd = 2)
+```
+
+Shapiro-Wilk
+
+```{r}
+shapiro.test(p1$difference[p1$sequence == "KV-NL"])
+agostino.test(p1$difference[p1$sequence == "KV-NL"], alternative = "two.sided")
+```
+
+```{r}
+shapiro.test(p1$difference[p1$sequence == "NL-KV"])
+agostino.test(p1$difference[p1$sequence == "NL-KV"], alternative = "two.sided")
+```
+
+```{r}
+shapiro.test(df$duration.log[df$notation.r == "natural language"])
+agostino.test(df$duration.log[df$notation.r == "natural language"], alternative = "two.sided")
+shapiro.test(df$duration.log[df$notation.r == "key-value"])
+agostino.test(df$duration.log[df$notation.r == "key-value"], alternative = "two.sided")
+```
+
+Cross-over Analysis
+
+## References
+
+Ivanchikj, A., Serbout, S., & Pautasso, C. (2020). From text to visual BPMN process models: Design and evaluation. *Proceedings of the 23rd ACM/IEEE International Conference on Model Driven Engineering Languages and Systems*, 229--239. <https://doi.org/10.1145/3365438.3410990>
