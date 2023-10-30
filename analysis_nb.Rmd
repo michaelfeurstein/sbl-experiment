@@ -34,6 +34,7 @@ library(ggpubr)
 library(lme4)
 library(multcomp)
 library(effectsize)
+library(partR2)
 library(moments)
 library(lemon)
 library(stringr)
@@ -50,7 +51,7 @@ The following imported file named ***"data_prepared.csv"*** contains all main me
 df <- read.csv("data_prepared.csv")
 ```
 
-The following im ***participant_profiles_anon_prepared.csv*** contains all anonymized data on participants and their profile (programming experience, programming interest, qualification etc.)
+The following is ***participant_profiles_anon_prepared.csv*** contains all anonymized data on participants and their profile (programming experience, programming interest, qualification etc.)
 
 ```{r}
 # read from prepared csv
@@ -457,66 +458,593 @@ text(b, counts - 1.5, paste0(sprintf("%4.1f ", counts / sum(counts) * 100), "%",
 
 ## Results and Hypothesis Tests
 
-The following steps are in line with the chronological order of Chapter 6, Section 6.3.2 Results and Hypothesis Tests.				
+The following steps are in line with the chronological order of Chapter 6, Section 6.3.2 Results and Hypothesis Tests.
 
-For the analysis of the effects of the two treatments, the difference of the measurements taken in Period 1 and 2 are used (Chapter 6, Section 6.1.8). We therefore calculate the period differences for each sequence. This step has been validated with calculations in [Validate SBL Experiment Procedure using Chow and Liu (1999)](https://github.com/michaelfeurstein/sbl-experiment/blob/main/validation/chowliu73/chowliu73_validation.Rmd).
+**Note on period difference calculation**
+
+For the analysis of the effects of the two treatments, the difference of the measurements taken in Period 1 and 2 are used (Chapter 6, Section 6.1.8). We calculate the period differences for each sequence. This step has been validated with calculations in [Validate SBL Experiment Procedure using Chow and Liu (1999)](https://github.com/michaelfeurstein/sbl-experiment/blob/main/validation/chowliu73/chowliu73_validation.Rmd).
 
 ```{r}
+# TODO move to Preparations 
+# TODO merge into one df when all variables clear
+# period differences: duration
 p1 <- df %>%
   group_by(subject, sequence) %>%
-  summarize(difference = duration.log[1]-duration.log[2])
-p1
+  summarize(duration_difference = duration.log[1]-duration.log[2])
 
 p1 %>%
   group_by(sequence) %>%
   summarize(mean = mean(difference))
+
+# period differences: accuracy
+p2 <- df %>%
+  group_by(subject, sequence) %>%
+  summarize(accuracy_difference = accuracy[1]-accuracy[2])
+
+# period differences: usability
+p3 <- df %>%
+  group_by(subject, sequence) %>%
+  summarize(sus_difference = sus.boxcox[1]-sus.boxcox[2])
+
+temp_df <- merge(x = p1, y = p2[ , c("subject", "accuracy_difference")], by = "subject", all.x=TRUE)
+
+df_calc <- merge(x = temp_df, y = p3[ , c("subject", "sus_difference")], by = "subject", all.x=TRUE)
+
+p2 %>%
+  group_by(sequence) %>%
+  summarize(acc_diff_mean = mean(accuracy_difference))
 ```
 
 ### Tests of Normality
 
 #### Efficiency (Duration)
 
-Two types of visual inspections (histograms and qq-plots) and two types of statistical tests (Shapiro-Wilk and Skewness-Test)
+Two types of visual inspections (histograms and qq-plots) and two types of statistical tests (Shapiro-Wilk and Skewness-Test).
 
-**Histogram**
+**Result:** Data is not normal. We use log transformation on duration.r to get normal distribution (duration.log).
+
+##### Histogram
 
 ```{r}
 ##### histogram ####
-hist(df$duration.r[df$notation.r == "natural language"])
-hist(df$duration.log[df$notation.r == "natural language"])
+hist(df$duration.r[df$notation.r == "natural language"], main="CNL Duration without transformation", xlab="Duration (in minutes)", xlim = range(pretty(c(0, 60))), ylim = range(pretty(c(0,20))))
+hist(df$duration.log[df$notation.r == "natural language"], main="CNL Duration transformed", xlab="Duration (in minutes)", xlim = range(pretty(c(1, 4))), ylim = range(pretty(c(0,25))))
 
-hist(df$duration.r[df$notation.r == "key-value"])
-hist(df$duration.log[df$notation.r == "key-value"])
+hist(df$duration.r[df$notation.r == "key-value"], main="KV Duration without transformation", xlab="Duration (in minutes)", xlim = range(pretty(c(0, 30))), ylim = range(pretty(c(0,30))))
+hist(df$duration.log[df$notation.r == "key-value"], main="KV Duration transformed", xlab="Duration (in minutes)", xlim = range(pretty(c(1, 4))), ylim = range(pretty(c(0,10))))
 ```
 
-**QQ-Plots**
+##### QQ-Plots
+
+Normal probability plot of residuals for controlled natural language notation with log transformed duration.
 
 ```{r}
-qqnorm(df$duration.log[df$notation.r == "natural language"], pch = 1, frame = FALSE)
+qqnorm(df$duration.log[df$notation.r == "natural language"], pch = 1, frame = FALSE, main = "CNL Normal Q-Q Plot for duration")
 qqline(df$duration.log[df$notation.r == "natural language"], col = "steelblue", lwd = 2)
 ```
 
-Shapiro-Wilk
+Normal probability plot of residuals for key-value notation with log transformed duration.
 
 ```{r}
-shapiro.test(p1$difference[p1$sequence == "KV-NL"])
-agostino.test(p1$difference[p1$sequence == "KV-NL"], alternative = "two.sided")
+qqnorm(df$duration.log[df$notation.r == "key-value"], pch = 1, frame = FALSE, main = "KV Normal Q-Q Plot for duration")
+qqline(df$duration.log[df$notation.r == "key-value"], col = "steelblue", lwd = 2)
 ```
 
+##### Shapiro-Wilk Test
+
+Using period difference, p-values are not significant, thus we cannot reject the null hypothesis which states that the data has normal distribution. **Result: Data is normal; use parametric tests.**
+
 ```{r}
-shapiro.test(p1$difference[p1$sequence == "NL-KV"])
-agostino.test(p1$difference[p1$sequence == "NL-KV"], alternative = "two.sided")
+shapiro.test(df_calc$duration_difference[df_calc$sequence == "KV-NL"])
+shapiro.test(df_calc$duration_difference[df_calc$sequence == "NL-KV"])
 ```
+
+**Shapiro-Wilk Test**
+
+Using treatments, p-values are not significant, thus we cannot reject the null hypothesis which states that the data has normal distribution. **Result: Data is normal; use parametric tests.**
 
 ```{r}
 shapiro.test(df$duration.log[df$notation.r == "natural language"])
-agostino.test(df$duration.log[df$notation.r == "natural language"], alternative = "two.sided")
 shapiro.test(df$duration.log[df$notation.r == "key-value"])
-agostino.test(df$duration.log[df$notation.r == "key-value"], alternative = "two.sided")
 ```
 
-Cross-over Analysis
+#### Effectiveness (Accuracy)
 
-## References
+Two types of visual inspections (histograms and qq-plots) and two types of statistical tests (Shapiro-Wilk and Skewness-Test).
+
+**Result:** Data is not normal. Data is skewed. No transformation works (log or box cox).
+
+##### Histogram
+
+```{r}
+##### histogram ####
+hist(df$accuracy[df$notation.r == "natural language"], main="CNL Accuracy without transformation", xlab="Accuracy (in percent)", ylim = range(pretty(c(0,30))))
+
+hist(df$accuracy[df$notation.r == "key-value"], main="KV Accuracy without transformation", xlab="Accuracy (in percent)", ylim = range(pretty(c(0,40))))
+```
+
+##### QQ-Plots
+
+Normal probability plot of residuals for controlled natural language notation for accuracy (no transformation).
+
+```{r}
+qqnorm(df$accuracy[df$notation.r == "natural language"], pch = 1, frame = FALSE, main = "CNL Normal Q-Q Plot for accuracy")
+qqline(df$accuracy[df$notation.r == "natural language"], col = "steelblue", lwd = 2)
+```
+
+Normal probability plot of residuals for key-value notation for accuracy (no transformation).
+
+```{r}
+qqnorm(df$accuracy[df$notation.r == "key-value"], pch = 1, frame = FALSE, main = "KV Normal Q-Q Plot for accuracy")
+qqline(df$accuracy[df$notation.r == "key-value"], col = "steelblue", lwd = 2)
+```
+
+##### Shapiro-Wilk Test
+
+Using period difference, p-values are significant (only KV-NL), still we go with the worst case and reject the null hypothesis which states that the data is of normal distribution. **Result: data is not normal; use non-parametric tests.**
+
+```{r}
+shapiro.test(df_calc$accuracy_difference[df_calc$sequence == "KV-NL"])
+shapiro.test(df_calc$accuracy_difference[df_calc$sequence == "NL-KV"])
+```
+
+**Shapiro-Wilk Test**
+
+Using treatments, p-values are significant, thus we reject the null hypothesis which states that the data is of normal distribution. **Result: data is not normal; use non-parametric tests.**
+
+```{r}
+shapiro.test(df$accuracy[df$notation.r == "natural language"])
+shapiro.test(df$accuracy[df$notation.r == "key-value"])
+```
+
+#### System Usability Scale (Usability)
+
+Two types of visual inspections (histograms and qq-plots) and two types of statistical tests (Shapiro-Wilk and Skewness-Test).
+
+**Result:** Data is not normal. Boxcox transformation is used.
+
+##### Histogram
+
+```{r}
+##### histogram ####
+hist(df$sus[df$notation.r == "natural language"], main="CNL SUS scores without transformation", xlab="SUS Score", ylim = range(pretty(c(0,20))), xlim = range(pretty(c(0,100))))
+hist(df$sus.boxcox[df$notation.r == "natural language"], main="CNL SUS scores transformed", xlab="SUS Score (transformed)", ylim = range(pretty(c(0,10))))
+
+hist(df$sus[df$notation.r == "key-value"], main="KV SUS scores without transformation", xlab="SUS Score", ylim = range(pretty(c(0,15))), xlim = range(pretty(c(0,100))))
+hist(df$sus.boxcox[df$notation.r == "key-value"], main="KV SUS scores transformed", xlab="SUS Score (transformed)", ylim = range(pretty(c(0,15))))
+```
+
+##### QQ-Plots
+
+Normal probability plot of residuals for controlled natural language notation with boxcox transformed SUS scores.
+
+```{r}
+qqnorm(df$sus.boxcox[df$notation.r == "natural language"], pch = 1, frame = FALSE, main = "CNL Normal Q-Q Plot for SUS scores")
+qqline(df$sus.boxcox[df$notation.r == "natural language"], col = "steelblue", lwd = 2)
+```
+
+Normal probability plot of residuals for key-value notation with boxcox transformed SUS scores.
+
+```{r}
+qqnorm(df$sus.boxcox[df$notation.r == "key-value"], pch = 1, frame = FALSE, main = "KV Normal Q-Q Plot for SUS scores")
+qqline(df$sus.boxcox[df$notation.r == "key-value"], col = "steelblue", lwd = 2)
+```
+
+##### Shapiro-Wilk Test
+
+Using period difference, p-values are significant (only NL-KV), still we go with the worst case and reject the null hypothesis which states that the data is of normal distribution. **Result: data is not normal; use non-parametric tests.**
+
+```{r}
+shapiro.test(df_calc$sus_difference[df_calc$sequence == "KV-NL"])
+shapiro.test(df_calc$sus_difference[df_calc$sequence == "NL-KV"])
+```
+
+**Shapiro-Wilk Test**
+
+Using treatments, p-values are not significant, thus we cannot reject the null hypothesis which states that the data has normal distribution. **Result: data is normal; use parametric tests.**
+
+```{r}
+shapiro.test(df$sus.boxcox[df$notation.r == "natural language"])
+shapiro.test(df$sus.boxcox[df$notation.r == "key-value"])
+```
+
+### Cross-over Analysis
+
+Two types of inspection: (1) interaction plots using sum of means for notation-by-period; (2) paired two-sided t-tests to check for cross-over effects. Based on Jones & Kenward (2014).
+
+#### Efficiency (Duration)
+
+##### (1) Interaction plot
+
+Notation-by-Period Means
+
+```{r}
+### CROSS-OVER ANALYSIS ####
+# Testing carry-over and treatment effect with t-tests
+# Based on: https://www.lexjansen.com/pharmasug/2006/Posters/PO16.pdf
+
+#### duration  ####
+# calculate and plot sum of means for notation,period
+# using non-transformed duration
+np <- df %>%
+  group_by(notation.r, period) %>%
+  summarize(mean_duration = mean(duration.r))
+
+pd = position_dodge(0)
+np.plot <- ggplot(np, aes(x = period,
+               y = mean_duration,
+               color = notation.r,
+               group = notation.r)) +
+  geom_point(shape  = 15,
+             size   = 4,
+             position = pd) +
+  geom_line() + theme(
+    legend.position = c(.99, .99),
+    legend.justification = c("right", "top"),
+    legend.box.just = "right",
+    legend.margin = margin(4, 4, 4, 4),
+    axis.title   = element_text(face = "bold"),
+    axis.text    = element_text(face = "bold"),
+    plot.caption = element_text(hjust = 0)
+  ) +
+  scale_x_continuous(limits = c(0.5, 2.5),breaks=seq(1,2),minor_breaks=NULL) +
+  ylab("Duration mean") +
+  xlab("Period") +
+  labs(title = "Plot of Notation-by-Period Means for Duration", subtitle = "Period vs. response (duration) by treatment (notation)", color = "Notation")
+
+# Currently only using notation,period interaction plot
+np.plot
+```
+
+##### (2) T-Test
+
+```{r}
+t.test(mean_duration ~ notation.r, data = np, paired = TRUE, conf.level = 0.95, alternative = "two.sided")
+```
+
+#### Effectiveness (Accuracy)
+
+##### (1) Interaction plot
+
+Notation-by-Period Means
+
+```{r}
+#### accuracy  ####
+# calculate and plot sum of means for notation,period
+np <- df %>%
+  group_by(notation.r, period) %>%
+  summarize(mean_accuracy = mean(accuracy))
+
+pd = position_dodge(0)
+np.plot <- ggplot(np, aes(x = period,
+                          y = mean_accuracy,
+                          color = notation.r,
+                          group = notation.r)) +
+  geom_point(shape  = 15,
+             size   = 4,
+             position = pd) +
+  geom_line() + theme(
+    legend.position = c(.99, .99),
+    legend.justification = c("right", "top"),
+    legend.box.just = "right",
+    legend.margin = margin(4, 4, 4, 4),
+    axis.title   = element_text(face = "bold"),
+    axis.text    = element_text(face = "bold"),
+    plot.caption = element_text(hjust = 0)
+  ) +
+  scale_x_continuous(limits = c(0.5, 2.5),breaks=seq(1,2),minor_breaks=NULL) +
+  ylab("Accuracy") +
+  xlab("Period") +
+  labs(title = "Plot of Notation-by-Period Means for Accuracy", subtitle = "Period vs. response (accuracy) by treatment (notation)", color = "Notation")
+
+np.plot
+```
+
+##### (2) T-Test
+
+```{r}
+t.test(mean_accuracy ~ notation.r, data = np, paired = TRUE, conf.level = 0.95, alternative = "two.sided")
+```
+
+#### System Usability Scale (Usability)
+
+##### (1) Interaction plot
+
+Notation-by-Period Means
+
+```{r}
+#### sus  ####
+# calculate and plot sum of means for notation,period
+np <- df %>%
+  group_by(notation.r, period) %>%
+  summarize(mean_sus = mean(sus))
+
+pd = position_dodge(0)
+np.plot <- ggplot(np, aes(x = period,
+                          y = mean_sus,
+                          color = notation.r,
+                          group = notation.r)) +
+  geom_point(shape  = 15,
+             size   = 4,
+             position = pd) +
+  geom_line() + theme(
+    legend.position = c(.99, .99),
+    legend.justification = c("right", "top"),
+    legend.box.just = "right",
+    legend.margin = margin(4, 4, 4, 4),
+    axis.title   = element_text(face = "bold"),
+    axis.text    = element_text(face = "bold"),
+    plot.caption = element_text(hjust = 0)
+  ) +
+  scale_x_continuous(limits = c(0.5, 2.5),breaks=seq(1,2),minor_breaks=NULL) +
+  ylab("SUS score") +
+  xlab("Period") +
+  labs(title = "Plot of Notation-by-Period Means for SUS scores", subtitle = "Period vs. response (SUS score) by treatment (notation)", color = "Notation")
+
+np.plot
+```
+
+##### (2) T-Test
+
+```{r}
+t.test(mean_sus ~ notation.r, data = np, paired = TRUE, conf.level = 0.95, alternative = "two.sided")
+```
+
+### Treatment Effects
+
+We report both t-tests, as recommended by Jones & Kenward (2014) and results from a linear mixed model, as recommended by Vegas et al. (2016). Additionally analysis steps are based on input by [Thomas Rusch](https://www.wu.ac.at/en/methods/team/dr-thomas-rusch/) from the Competence Center for Empirical Research Methods and details communicated by Lukas Meier in slideset on "[Multiple Treatments on the Same Experimental Unit](https://ethz.ch/content/dam/ethz/special-interest/math/statistics/sfs/Education/Advanced%20Studies%20in%20Applied%20Statistics/course-material/repeatedMeasures/4_crossover.pdf)".
+
+For each variable we setup:
+
+(1) linear mixed model\
+(2) pair-wise comparison t-tests\
+(3) effect size\
+(4) Tukey HSD
+
+[**Notes on linear mixed models**]{.underline}
+
+We now setup a linear mixed models using lmer for each variable (duration, accuracy, usability).
+
+*Note 1:* we don't fit a model as we don't really have a max/min model with options to remove random effects and compare the model fit to the previous model.
+
+Note 2: we setup two models based on slideset by Lukas Meier and validation data replicated with chowliu (link? chowliu73_validation.Rmd) in order to check:
+
+-   **period effect** is used from model based on sequence effect (model_seq)
+
+-   **carryover effect** is used from model based on interaction effect (model_int)
+
+-   **treatment effect** can be used from both models (model_seq = model_int)
+
+TODO:
+
+-   For reporting create data to show in table with also effect size and tukey plot on top of it. all in one. then write about it.
+
+-   Link for checkmodel: <https://iamciera.github.io/lme4tutorial/>
+
+#### Efficiency (Duration)
+
+##### (1) Linear Mixed Model
+
+[**Model 1: Sequence Effect**]{.underline}
+
+```{r}
+###### Linear Regression (Linear Mixed Model) for Duration ####
+# based on input from Thomas Rusch + slideset from Meier
+# model as a sequence effect
+model_seq<-lmer(duration.log~notation.r+period+sequence+(1|subject),data=df)
+summary(model_seq)
+```
+
+From the above we can see that there is a period effect. Note that H0 refers to the preiod effect.
+
+| Parameter     | Estimate | Standard Error | T-Value | DF  | Prob Level | Reject H0 at α = 0.050? |
+|----------|----------|----------|----------|----------|----------|------------|
+| Period Effect | -0.35476 | 0.04728        | -7.504  | 46  | 1.61e-09   | Yes                     |
+
+[Report:]{.underline} The tests of fixed effects show a **significant period effect**. The test rejects the assumption of equal period effects at the 0.05 significance level (the actual probability level is 1.61e-09).
+
+[**Model 2: Interaction Effect**]{.underline}
+
+```{r}
+# model as a interaction effect
+model_int<-lmer(duration.log~notation.r*period+(1|subject),data=df)
+summary(model_int)
+```
+
+From the above output we can see that there is no carryover effect (the carryover effect is leveled out by design and this is hereby confirmed:
+
+| Parameter        | Estimate | Standard Error | T-Value | DF  | Prob Level | Reject H0 at α = 0.050? |
+|----------|----------|----------|----------|----------|----------|-----------|
+| Carryover Effect | -0.09427 | 0.19557        | -0.482  | 46  | 0.63210    | No                      |
+
+[Report:]{.underline} The tests of fixed effects show **no significant carryover effect**. The test failed to reject the assumption of equal carryover effects at the 0.05 significance level (the actual probability level is 0.63210).
+
+[**Treatment Effect: Duration**]{.underline}
+
+| Alternative Hypothesis | Mean Difference in percent | Standard Error | T-Value | DF  | Prob Level | Reject H0 at α = 0.050? |
+|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+| μCNL - μKV ≠ 0         | 29.46605                   | 0.04728        | 5.690   | 46  | 8.42e-07   | Yes                     |
+
+Report: The two treatment means are significantly different based on the reported fixed effects in the linear mixed model at the 0.05 significance level (the actual probability level was 8.42e-07).
+
+##### (2) Pairwise T-Test
+
+We always run both tests. For the variable efficiency (duration) data is normal, therefore we highlight result from paired t-test.
+
+```{r}
+##### t-test ####
+## two-sided, paired t-test
+t.test(x = df$duration.log[df$notation.r == "natural language"], y = df$duration.log[df$notation.r == "key-value"], paired = TRUE, conf.level = 0.95, alternative = "two.sided")
+
+##### wilcoxon ####
+wilcox.test(df$duration.log[df$notation.r == "natural language"],df$duration.log[df$notation.r == "key-value"], paired = TRUE, conf.int=TRUE, conf.level = 0.95)
+```
+
+##### (3) Effect Size
+
+[**Unstandardized**]{.underline}
+
+Based on Kampenes et al. (2007) "[u]nstandardized effect size measures are expressed in terms of raw units [...]" (p. 1077).
+
+```{r}
+##### mean difference (log transformed) ####
+# values
+m_duration_nl <- mean(df$duration.log[df$notation.r == "natural language"])
+m_duration_kv <- mean(df$duration.log[df$notation.r == "key-value"])
+# unstandardized mean difference between cnl kv
+diff_duration_nlkv <- m_duration_nl-m_duration_kv
+# avergae of nl kv
+avg_duration_nlkv <- (m_duration_nl+m_duration_kv)/2
+ratio_diff_duration_nlkv <- diff_duration_nlkv/avg_duration_nlkv
+# percentage
+percent_diff_duration_nlkv <- ratio_diff_duration_nlkv*100
+print(c("Mean Difference Duration (log transformed)"))
+print(c("mean difference duration: ", diff_duration_nlkv))
+print(c("mean difference in percentage: ", percent_diff_duration_nlkv))
+
+##### mean difference (measured values) ####
+# values
+m_duration_nl <- mean(df$duration.r[df$notation.r == "natural language"])
+m_duration_kv <- mean(df$duration.r[df$notation.r == "key-value"])
+# unstandardized mean difference between cnl kv
+diff_duration_nlkv <- m_duration_nl-m_duration_kv
+# avergae of nl kv
+avg_duration_nlkv <- (m_duration_nl+m_duration_kv)/2
+ratio_diff_duration_nlkv <- diff_duration_nlkv/avg_duration_nlkv
+# percentage
+percent_diff_duration_nlkv <- ratio_diff_duration_nlkv*100
+print(c("Mean Difference Duration (measured in raw units: minutes)"))
+print(c("mean difference duration: ", diff_duration_nlkv))
+print(c("mean difference in percentage: ", percent_diff_duration_nlkv))
+```
+
+[Report:]{.underline} The estimated unstandardized mean difference (μCNL - μKV), measured in raw units (minutes) is 3.54 minutes, that is 29.47 %.
+
+[**Standardized**]{.underline}
+
+**Marginal/Conditional R2**
+
+"*Marginal R2* considers only the variance of the **fixed effects** (without the random effects) and *conditional R2* takes *both* the **fixed and random effects** into account (i.e., the total model)." ([Source](https://easystats.github.io/performance/articles/r2.html#r2-for-mixed-models))
+
+```{r}
+# Understanding effect size for linear mixed models
+# Source: https://joshuawiley.com/MonashHonoursStatistics/LMM_Comparison.html#effect-sizes
+
+# Details on getting R-squared for mixed models
+# Source: https://easystats.github.io/performance/articles/r2.html#r2-for-mixed-models
+
+# Details on using partR2 to get CIs
+# Source: https://cran.r-project.org/web/packages/partR2/vignettes/Using_partR2.html
+# Paper: https://peerj.com/articles/11414/
+
+# Interpretation of R-squared
+# Source: https://easystats.github.io/effectsize/reference/interpret_r2.html
+
+# R-squared (marginal/conditional)
+r2_dur <- performance::r2(model_seq)
+r2_dur
+# Interpretation of R-suqared (marginal/conditional)
+interpret_r2(c(r2_dur[["R2_conditional"]][["Conditional R2"]],r2_dur[["R2_marginal"]][["Marginal R2"]]), rules = "cohen1988")
+
+# Using partR2 to confirm performance package and get CIs
+# Marginal R-squared
+r2_mar_dur <- partR2(model_seq, partvars = c("notation.r", "period"), 
+                  R2_type = "marginal", nboot = 10)
+r2_mar_dur
+summary(r2_mar_dur)
+forestplot(r2_mar_dur, type = "R2")
+
+# Conditional R-squared
+r2_con_dur <- partR2(model_seq, partvars = c("notation.r", "period"), 
+                  R2_type = "conditional", nboot = 10)
+r2_con_dur
+summary(r2_con_dur)
+forestplot(r2_con_dur, type = "R2")
+```
+
+**Cohen's d**
+
+```{r}
+effectsize::cohens_d(df$duration.log[df$notation.r == "natural language"],df$duration.log[df$notation.r == "key-value"], paired = TRUE, pooled_sd = TRUE)
+```
+
+##### (4) Posthoc: Tukey HSD
+
+```{r}
+summary(glht(model_seq, linfct=mcp(notation.r="Tukey")))
+ci_dur <- confint(model_seq, level = 0.95)
+
+means <- tapply(df$duration.log, df$notation.r, mean)
+mean_dur_diff <- means[2] - means[1]
+mean_dur_diff <- mean_dur_diff[["natural language"]]
+mean_dur_diff_lwr <- ci_dur[4,1]
+mean_dur_diff_upr <- ci_dur[4,2]
+
+mean_dur_diff_upr
+mean_dur_diff
+mean_dur_diff_lwr
+
+# Plotting Tukey HSD
+# Source: Stefan aov.html + http://sape.inf.usi.ch/quick-reference/ggplot2/geom_pointrange
+
+# (1) using log transformed data
+duration_transformed_CI=data.frame(contrast="nl-kv", lower=mean_dur_diff_lwr, mean=mean_dur_diff, upper=mean_dur_diff_upr)
+
+ggplot() + 
+  geom_pointrange(data=duration_transformed_CI, mapping=aes(x=contrast, y=mean, ymin=lower, ymax=upper), size=1, color="black", fill="white", shape=22) + 
+  geom_hline(yintercept = 0, linetype="dotted") +
+  scale_y_continuous(limits=c(-0.5,1)) +
+  coord_flip() +
+  ylab('Mean Differences (log(TIME))') +
+  xlab('Model') + theme_bw() + theme(legend.position="none",
+                                     axis.title.x=element_blank(),
+                                     axis.text.x=element_text(size=12),
+                                     axis.title.y=element_blank(),
+                                     axis.text.y=element_blank())
+
+# (2) using back-transformed data for reporting
+mean_dur_diff_org <- exp(mean_dur_diff)
+mean_dur_diff_lwr_org <- exp(mean_dur_diff_lwr)
+mean_dur_diff_upr_org <- exp(mean_dur_diff_upr)
+
+mean_dur_diff_upr_org
+mean_dur_diff_org
+mean_dur_diff_lwr_org
+
+duration_original_CI=data.frame(contrast="CNL-KV", lower=mean_dur_diff_lwr_org, mean=mean_dur_diff_org, upper=mean_dur_diff_upr_org)
+
+ggplot(data=duration_original_CI) +
+  geom_bar(aes(x=contrast, y=mean-1), stat="identity", fill="lightblue", position = position_nudge(y = 1)) +
+  geom_pointrange(mapping=aes(x=contrast, y=mean, ymin=lower, ymax=upper), size=1, color="black", fill="white", shape=22) +
+  geom_hline(yintercept = 1, linetype="dotted") +
+  scale_y_continuous(limits=c(0,2)) +
+  coord_flip() +
+  ylab('Differences in mean levels of duration') +
+  xlab('CNL-KV') + 
+  labs(title = "95% family-wise confidence level", subtitle = "Tukey HSD") + theme_bw() + theme(legend.position="none",
+                                     axis.title.x=element_text(size=12),
+                                     axis.text.x=element_text(size=12),
+                                     axis.title.y=element_blank(),
+                                     axis.text.y=element_text(size=12))
+
+# Result duration.log (log transformed)
+# lwr = 0.1764396 mean difference = 0.2689925 upr = 0.3615455
+
+# Result duration (back transformed)
+# lwr = 1.192962 mean difference = 1.308645  upr = 1.435546
+
+# Reporting: KV is im schlechtesten fall 19% schneller & im schnitt 31% und im Besten Fall 44 % fall
+
+```
+
+# CONTINUE HERE: create table for insertion in thesis with all the values from above and the tukey plot above or below the table.!!!
+
+# References
 
 Ivanchikj, A., Serbout, S., & Pautasso, C. (2020). From text to visual BPMN process models: Design and evaluation. *Proceedings of the 23rd ACM/IEEE International Conference on Model Driven Engineering Languages and Systems*, 229--239. <https://doi.org/10.1145/3365438.3410990>
+
+Jones, B., & Kenward, M. G. (2014). *Design and Analysis of Cross-Over Trials* (3rd Ed.). Chapman and Hall/CRC. <https://doi.org/10.1201/b17537>
+
+Kampenes, V. B., Dybå, T., Hannay, J. E., & Sjøberg, D. I. K. (2007). A systematic review of effect size in software engineering experiments. *Information and Software Technology*, *49*(11), 1073--1086. <https://doi.org/10.1016/j.infsof.2007.02.015>
+
+Vegas, S., Apa, C., & Juristo, N. (2016). Crossover Designs in Software Engineering Experiments: Benefits and Perils. *IEEE Transactions on Software Engineering*, *42*(2), 120--135. <https://doi.org/10.1109/TSE.2015.2467378>
