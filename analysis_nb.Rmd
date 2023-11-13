@@ -832,8 +832,8 @@ TODO:
 ###### Linear Regression (Linear Mixed Model) for Duration ####
 # based on input from Thomas Rusch + slideset from Meier
 # model as a sequence effect
-model_seq<-lmer(duration.log~notation.r+period+sequence+(1|subject),data=df)
-summary(model_seq)
+model_seq_dur<-lmer(duration.log~notation.r+period+sequence+(1|subject),data=df)
+summary(model_seq_dur)
 ```
 
 From the above we can see that there is a period effect. Note that H0 refers to the period effect.
@@ -1207,7 +1207,53 @@ wilcox.test(df$accuracy[df$notation.r == "natural language"],df$accuracy[df$nota
 
 ```
 
-# CONTINUE HERE: report in text
+#### Usability (SUS)
+
+##### (1) Linear Mixed Model
+
+[**Model 1: Sequence Effect**]{.underline}
+
+```{r}
+###### Linear Regression (Linear Mixed Model) for Accuracy ####
+# based on input from Thomas Rusch + slideset from Meier
+# model as a sequence effect
+model_seq_sus<-lmer(sus.boxcox~notation.r+period+sequence+(1|subject),data=df)
+summary(model_seq_sus)
+```
+
+From the above we can see that there is a period effect. Note that H0 refers to the period effect.
+
+| Parameter     | Estimate | Standard Error | T-Value | DF  | Prob Level | Reject H0 at α = 0.050? |
+|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+| Period Effect | -76737.05 | 27193.34 | -2.822 | 46 | 0.007027 | Yes |
+
+[Report:]{.underline} The tests of fixed effects show a **significant period effect**. The test rejects the assumption of equal period effects at the 0.05 significance level (the actual probability level is 0.007027).
+
+[**Model 2: Interaction Effect**]{.underline}
+
+```{r}
+# model as a interaction effect
+model_int_sus<-lmer(sus.boxcox~notation.r*period+(1|subject),data=df)
+summary(model_int_sus)
+```
+
+From the above output we can see that there is no carryover effect (the carryover effect is leveled out by design and this is hereby confirmed:
+
+| Parameter        | Estimate | Standard Error | T-Value | DF  | Prob Level | Reject H0 at α = 0.050? |
+|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+| Carryover Effect | -128398.99 | 93635.16 | -1.371 | 46 | 0.177 | No |
+
+[Report:]{.underline} The tests of fixed effects show **no significant carryover effect**. The test failed to reject the assumption of equal carryover effects at the 0.05 significance level (the actual probability level is 0.177).
+
+[**Treatment Effect: Usability**]{.underline}
+
+| Alternative Hypothesis | Mean Difference in percent | Standard Error | T-Value | DF  | Prob Level | Reject H0 at α = 0.050? |
+|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+| μCNL - μKV ≠ 0 | -110224.16 | 27193.34 | -4.053 | 46 | 0.000193 | Yes |
+
+Report: The two treatment means are significantly different based on the reported fixed effects in the linear mixed model at the 0.05 significance level (the actual probability level was 0.000193).
+
+# CONTINUE HERE: copy from above and get numbers for SUS
 
 # References
 
