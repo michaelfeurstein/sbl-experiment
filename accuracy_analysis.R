@@ -43,19 +43,28 @@ rm(f_data)
 f_data <- read.csv("accuracy_features_flat_prepared.csv")
 
 # New facet label names for dose variable
-feature_f.labels <- c("F1[a]", "F[2]", "asd", "asd", "asd", "asd", "asd", "asd", "asd", "asd", "asd", "asd", "asd", "asd", "asd", "asd", "asd")
+feature_f.labels <- c("F1[a]", "F2[a]", "F2[b]", "F2[c]", "F2[d]", "F2[e]", "F3[a]", "F3[b]", "F4[a]", "F4[b]", "F4[c]", "F4[d]", "F4[e]", "F4[f]", "F4[g]", "F5[a]", "F5[b]")
 names(feature_f.labels) <- c("f1a", "f2a", "f2b", "f2c", "f2d", "f2e", "f3a", "f3b", "f4a", "f4b", "f4c", "f4d", "f4e", "f4f", "f4g", "f5a", "f5b")
 
 # Draw barplot with grouping & stacking
 ggplot(f_data,
-        aes(x = notation, y = value, fill = accuracy)) +
-        geom_bar(stat = "identity", position = "stack") +
-        facet_grid(cols = vars(feature), labeller = labeller(feature = feature_f.labels, .default = label_parsed)) +
+       aes(x = notation, y = value, fill = accuracy)) +
+  geom_bar(stat = "identity", position = "stack") +
+  facet_grid(cols = vars(feature), labeller = labeller(feature = feature_f.labels, .default = label_parsed)) +
   scale_y_continuous(labels = function(x) paste0(x, "%")) +
+  scale_x_discrete(labels = c("kv","cnl")) +
+  scale_fill_manual(values = c("#99CC66","#CC6666")) +
   geom_text(aes(label = paste0(round(value, digits = 0),"%")),
             position = position_stack(),
-            vjust = 1.2,
-            size = 2.5)
+            hjust = 1.2,
+            vjust = 0.5,
+            angle = 90,
+            size = 2.2) + 
+  ggtitle("Detailed accuracy (in %) for features implemented") +
+  xlab("Notation") +
+  ylab("Accuracy") +
+  labs(fill="Feature\nimplemented") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5))
 
 # Quality
 q_data <- read.csv("accuracy_quality_flat.csv", sep = ";", dec = ",", header = TRUE)
@@ -79,5 +88,7 @@ ggplot(q_data,
   scale_y_continuous(labels = function(x) paste0(x, "%")) +
   geom_text(aes(label = paste0(round(value, digits = 0),"%")),
             position = position_stack(),
-            vjust = 1.2,
-            size = 2.5)
+            hjust = 1.2,
+            vjust = 0.5,
+            angle = 90,
+            size = 2.2)

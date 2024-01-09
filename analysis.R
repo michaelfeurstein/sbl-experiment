@@ -4,6 +4,7 @@ library(ggpubr)
 library(lme4)
 library(effectsize)
 library(multcomp)
+library(sjstats)
 #library(lmerTest)
 #library(simr)
 #library(pwr)
@@ -11,45 +12,6 @@ library(multcomp)
 #library(MASS)
 
 ### IMPORT DATA  ####
-
-# crossover trial AB|BA
-# csv: https://github.com/michaelfeurstein/sbl-experiment-pretest/blob/master/dataset.csv 
-
-mydata <- read.csv("data_export.csv", sep = ";", dec = ",", header = TRUE)
-mydata$time <- as.POSIXct(mydata$time, format="%M:%S")
-mydata$duration.r <- as.numeric(format(mydata$time, "%M")) + as.numeric(format(mydata$time, "%S"))/60
-
-# preparations for testing
-# setup mapping and as.factor
-syntaxMapping <- c("nl" = 1, "kv" = 2)
-rankingMapping <- c("don't know" = 0, "2nd place" = 1, "1st place" = 2)
-groupMapping <- c("beginner, student" = "bs", "advanced, student" = "as", "beginner, professional" = "bp", "advanced, professional" = "ap")
-
-mydata$notation.r <- syntaxMapping[mydata$notation]
-mydata$rank.r <- rankingMapping[mydata$rank]
-mydata$group.r <- groupMapping[mydata$group.internal]
-
-mydata$notation.r <- as.factor(mydata$notation.r)
-mydata$notation.r <- factor(mydata$notation.r, levels = c("1", "2"), labels = c("natural language", "key-value"))
-mydata$sequence <- as.factor(mydata$sequence)
-mydata$sequence <- factor(mydata$sequence, levels = c("1", "2"), labels = c("NL-KV", "KV-NL"))
-mydata$rank.r <- factor(mydata$rank.r, levels = c("0", "1", "2"), labels = c("don't know", "2nd place", "1st place"))
-mydata$rank.r <- as.integer(mydata$rank.r)
-mydata$period <- as.factor(mydata$period)
-mydata$group.r <- as.factor(mydata$group.r)
-mydata$group.r <- factor(mydata$group.r, levels = c("bs", "as", "bp", "ap"), labels = c("beginner-student", "advanced-student", "beginner-professional", "advanced-professional"))
-
-# log transform duration
-mydata$duration.log = log(mydata$duration.r)
-
-# boxcox transform sus
-mydata$sust = (mydata$sus^3.2-1)/3.2
-
-# the actual dataframe we'll be working with
-df <- subset(mydata, select = c("subject", "sequence", "period", "group.r", "notation.r", "duration.r", "duration.log", "accuracy", "sus", "sust", "rank.r"))
-
-# write to csv so we don't need to run above lines too often
-write.csv(df, "data_prepared.csv")
 
 # read from prepared csv
 df <- read.csv("data_prepared.csv")
@@ -80,7 +42,7 @@ bp_duration <- boxplot(duration.r ~ notation.r, main = "Duration", data = df, yl
 
 df %>%
   group_by(notation.r) %>%
-  summarize(mean_accuracy = mean(accuracy), sd_duration = sd(accuracy))
+  summarize(mean = mean(accuracy), sd = sd(accuracy), min = min(accuracy), max = max(accuracy), med = median(accuracy), q1 = quantile(accuracy, 0.25), q3 = quantile(accuracy, 0.75))
 
 #### sus scores: mean, sd ####
 
@@ -107,6 +69,10 @@ hist(df$duration.r[df$notation.r == "key-value"], main = "Key-Value", xlab = "Du
 # histogram on log transformed duration
 hist(df$duration.log[df$notation.r == "natural language"], main = "Natural Language", xlab = "Duration in minutes log transformed")
 hist(df$duration.log[df$notation.r == "key-value"], main = "Key-Value", xlab = "Duration in minutes log transformed")
+
+qqnorm(df$duration.log[df$notation.r == "natural language"], pch = 1, frame = FALSE)
+qqline(df$duration.log[df$notation.r == "natural language"], col = "steelblue", lwd = 2)
+qqplot(df$duration.log[df$notation.r == "natural language"])
 
 # REPORT #
 # log transformed duration fits better for the assumption of normality
@@ -311,7 +277,10 @@ interaction.plot(factor(df$period),df$notation,df$duration.r)
 # Alternative Hypothesis: there is no significant difference between NL-KV / KV-NL sequences --> this means there is NO carry over effect (use both periods)
 # p-value > 0.05 shows possible carry-over effect is not significantly different between NL-KV / KV-NL sequences
 t.test(mean_duration ~ sequence, data = sp)
-t.test(mean_duration ~ notation.r, data = np)
+t.test(mean_duration ~ notation.r, data = np_t)
+
+# reassess: this should be teh actual test for crossover effect
+t.test(duration.r ~ sequence , data = df, paired = TRUE, conf.level = 0.95, alternative = "two.sided")
 
 # based on the result of the test update the dataframe
 # option 1: leave it as it is because there is no carry over effect
@@ -484,14 +453,13 @@ df %>%
 # values
 m.nl <- mean(df$duration.r[df$notation.r == "natural language"])
 m.kv <- mean(df$duration.r[df$notation.r == "key-value"])
-# difference between nl kv: nl-kv
+# unstandardized mean difference between cnl kv
 diffnlkv <- m.nl-m.kv
 # avergae of nl kv
 avgnlkv <- (m.nl+m.kv)/2
 rationlkv <- diffnlkv/avgnlkv
 # percentage
 percent_diff_nlkv <- rationlkv*100
-
 print(c("mean difference in percentage: ", percent_diff_nlkv))
 
 ##### shapiro ####
@@ -500,7 +468,7 @@ shapiro.test(df$duration.log[df$notation.r == "key-value"])
 
 ##### t-test ####
 ## two-sided, paired t-test
-t.test(df$duration.log[df$notation.r == "natural language"],df$duration.log[df$notation.r == "key-value"], paired = TRUE, conf.level = 0.95, alternative = "two.sided")
+t.test(x = df$duration.log[df$notation.r == "natural language"], y = df$duration.log[df$notation.r == "key-value"], paired = TRUE, conf.level = 0.95, alternative = "two.sided")
 
 ##### wilcoxon ####
 wilcox.test(df$duration.r[df$notation.r == "natural language"],df$duration.r[df$notation.r == "key-value"], paired = TRUE, conf.int=TRUE, conf.level = 0.95)
@@ -508,22 +476,50 @@ wilcox.test(df$duration.r[df$notation.r == "natural language"],df$duration.r[df$
 ##### effect size ####
 cohens_d(df$duration.log[df$notation.r == "natural language"],df$duration.log[df$notation.r == "key-value"], paired = TRUE, pooled_sd = TRUE)
 
-##### ANOVA ####
+# compare with hedges_g
+hedges_g()
+
+##### linear mixed model ####
 
 # mean difference and confidence interval (CI) bounds
 
-###### linear regression ####
+###### lmer ####
 # based on input from Thomas Rusch
-m4<-lmer(duration.log~notation.r+factor(period)+(1|subject),data=df)
+#m4<-lmer(duration.log~notation.r+factor(period)+(1|subject),data=df)
+# and adapted based on Lukas Meier slideset
+m4<-lmer(duration.log~notation.r+period+sequence+(1|subject),data=df)
 anova(m4)
+anova_stats(m4)
 summary(m4)
 
 qqnorm(df$duration.log, pch = 1, frame = FALSE)
 qqline(df$duration.log, col = "steelblue", lwd = 2)
+
 plot(df$duration.log, resid(m4))
 abline(0, 0) 
 
 summary(glht(m4, linfct=mcp(notation.r="Tukey")))
+
+confint(m4)
+####
+# Source Calc: https://rpubs.com/aaronsc32/post-hoc-analysis-tukey
+# Source Plot: https://rpubs.com/Edbbio/885399 
+
+N <- length(df$duration.log) # sample size = 96
+k <- length(unique(df$notation.r)) # number of treatments = 2
+n <- N / k # number of samples per group
+
+# Mean Square
+confint(m4)
+
+means <- tapply(df$duration.log, df$notation.r, mean)
+trt1.ctrl.diff <- means[2] - means[1]
+trt1.ctrl.diff
+
+trt1.ctrl.diff.lower <- 0.1764396
+trt1.ctrl.diff.upper <- 0.3615455
+
+####
 
 ###### Tukey HSD ####
 # based on input from Stefan Sobernig
@@ -545,7 +541,7 @@ resultDF <- data.frame(result$notation.r)
 # Source: Stefan aov.html + http://sape.inf.usi.ch/quick-reference/ggplot2/geom_pointrange
 
 # (1) using log transformed data
-d=data.frame(contrast=rownames(resultDF), lower=resultDF[2]$lwr, mean=resultDF[1]$diff, upper=resultDF[3]$upr)
+d=data.frame(contrast="nl-kv", lower=trt1.ctrl.diff.lower, mean=trt1.ctrl.diff, upper=trt1.ctrl.diff.upper)
 
 ggplot() + 
   geom_pointrange(data=d, mapping=aes(x=contrast, y=mean, ymin=lower, ymax=upper), size=1, color="black", fill="white", shape=22) + 
@@ -560,11 +556,11 @@ ggplot() +
                                      axis.text.y=element_blank())
 
 # (2) using back-transformed data for reporting
-duration.meandiff.b <- exp(duration.meandiff)
-duration.lwr.b <- exp(duration.lwr)
-duration.upr.b <- exp(duration.upr)
+duration.meandiff.b <- exp(trt1.ctrl.diff)
+duration.lwr.b <- exp(trt1.ctrl.diff.lower)
+duration.upr.b <- exp(trt1.ctrl.diff.upper)
 
-d=data.frame(contrast=rownames(resultDF), lower=exp(resultDF[2]$lwr), mean=exp(resultDF[1]$diff), upper=exp(resultDF[3]$upr))
+d=data.frame(contrast="nl-kv", lower=duration.lwr.b, mean=duration.meandiff.b, upper=duration.upr.b)
 
 ggplot(data=d) +
   geom_bar(aes(x=contrast, y=mean-1), stat="identity", fill="lightblue", position = position_nudge(y = 1)) +
@@ -572,7 +568,7 @@ ggplot(data=d) +
   geom_hline(yintercept = 1, linetype="dotted") +
   scale_y_continuous(limits=c(-0.5,2)) +
   coord_flip() +
-  ylab('Mean Differences (log(TIME))') +
+  ylab('Mean Differences ((raw unit duration in minutes))') +
   xlab('Model') + theme_bw() + theme(legend.position="none",
                                      axis.title.x=element_blank(),
                                      axis.text.x=element_text(size=12),
@@ -599,12 +595,29 @@ d
 # correctness of result from coding task (creation of video-based learning module)
 
 ##### boxplot ####
-boxplot(accuracy ~ notation.r, data = df, xlab = "Notation", ylab = "Accuracy in percent", names = c("1" = "NL", "2" = "KV"))
+boxplot(accuracy ~ notation.r, data = df, xlab = "Notation", ylab = "Accuracy in percent")
 
 ##### mean ####
 df %>%
   group_by(notation.r) %>%
-  summarize(mean_accuracy = mean(accuracy), sd_accuracy = sd(accuracy), median_accuracy = median(accuracy))
+  summarize(mean = mean(accuracy), sd = sd(accuracy), min = min(accuracy), max = max(accuracy), med = median(accuracy), q1 = quantile(accuracy, 0.25), q3 = quantile(accuracy, 0.75))
+
+## percentages of 0% accuracy and 100% accuracy
+min_table <- table(df$accuracy[df$notation.r == "natural language"])
+min_table_prop <- prop.table(min_table)
+
+# number count
+min_table
+# fractions
+min_table_prop
+
+min_table <- table(df$accuracy[df$notation.r == "key-value"])
+min_table_prop <- prop.table(min_table)
+
+# number count
+min_table
+# fractions
+min_table_prop
 
 ##### mean difference ####
 # values
@@ -653,7 +666,7 @@ interaction.plot(factor(df$period),df$notation,df$sus)
 ##### mean ####
 df %>%
   group_by(notation.r) %>%
-  summarize(mean_sus = mean(sus), sd_sus = sd(sus), median_sus = median(sus))
+  summarize(mean = mean(sus), sd = sd(sus), min = min(sus), max = max(sus), med = median(sus), q1 = quantile(sus, 0.25), q3 = quantile(sus, 0.75))
 
 ##### mean difference ####
 # values
@@ -681,9 +694,6 @@ t.test(df$sust[df$notation.r == "natural language"],df$sust[df$notation.r == "ke
 # double check with non-parametric test on regular data
 wilcox.test(df$sus[df$notation.r == "natural language"],df$sus[df$notation.r == "key-value"], paired = TRUE, conf.int=TRUE, conf.level = 0.95)
 
-##### effect size ####
-cohens_d(df$sust[df$notation.r == "natural language"],df$sust[df$notation.r == "key-value"], paired = TRUE, pooled_sd = TRUE)
-
 ##### linear regression ####
 m_sus<-lmer(sust~notation.r+factor(period)+(1|subject),data=df)
 anova(m_sus)
@@ -694,9 +704,63 @@ qqline(df$sust, col = "steelblue", lwd = 2)
 plot(df$sust, resid(m_sus))
 abline(0, 0) 
 
-# TODO
-# - remove outlier and run steps again
-# - report if results change (hopefully not)
+###### Tukey HSD ####
 
+model <- aov(sus~notation.r, data=df)
+summary(model)
+TukeyHSD(model, conf.level=.95)
+plot(TukeyHSD(model, conf.level=.95), las = 2)
 
+##### effect size ####
 
+###### cohen's d ####
+cohens_d(df$sust[df$notation.r == "natural language"],df$sust[df$notation.r == "key-value"], paired = TRUE, pooled_sd = TRUE)
+
+#### RANK  ####
+# sorting a df manually: https://stackoverflow.com/a/9392408/693052
+
+##### barplot ####
+dfr <- read.csv("ranking_preference.csv", sep = ";", dec = ",", header = TRUE)
+desired_order <- c("preferNL","nopref","preferKV")
+# Re-order the levels
+dfr$preference <- factor( as.character(dfr$preference), levels=desired_order )
+# Re-order the data.frame
+dfr <- dfr[order(dfr$preference),]
+counts <- table(dfr$preference)
+b<-barplot(counts, main="Ranking (Personal Preference)",
+        xlab="Preference for a notation",names.arg=c("CNL", "No Preference", "KV"),ylim=range(pretty(c(0, counts))))
+text(b, counts - 1.5, paste0(sprintf("%4.1f ", counts / sum(counts) * 100), "%", sprintf(" (%d)",counts)), font=1, col=c("black"), cex = 0.9)
+
+# Source: https://statisticsbyjim.com/basics/ordinal-data/
+# The ranking data is of type ordinal
+
+# Generally this is calle "Paired Preference Test"
+# There is 2-AFC (2 alternatives force choice) and 2-AC (2 alternatives choice)
+# Discussion about forcing preference vs no preference 
+
+# Source: https://measuringu.com/preference-data/
+# Tests available: binomial / Chi-Square Goodness of Fit test & McNemar
+# Problem is with the ties e.g. 1st place 1st place
+
+# Approach:
+# plot histogram of 1st place 2nd place of NL and KV
+# plot how many ties 
+# argue to use ties as no preference
+# which test: 
+
+boxplot(rank.r ~ notation.r, data = df)
+
+hist(df$rank.r[df$notation.r == "natural language"])
+
+mood.test(rank.r ~ notation.r, data = df, exact = FALSE)
+
+wilcox.test(rank.r ~ notation.r, data = df, exact = FALSE)
+
+binom.test(33,42)
+
+p_chisq <- pchisq(q = 0.99, df = 1, lower.tail=FALSE)
+sprintf("%.12f", p_chisq)
+
+# STATEMENT on outliers
+# We are keeping outliers.
+# Link: https://statisticsbyjim.com/basics/remove-outliers/

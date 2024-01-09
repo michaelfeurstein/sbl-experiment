@@ -44,24 +44,42 @@ profiledata$interest.r <- factor(profiledata$interest.r, levels = c("0", "1", "2
 # use gsub to replace N/A's with No
 profiledata <- data.frame(lapply(profiledata, function(x) {gsub("N/A", "No", x)}))
 
+##
+## prepare qualification ####
+##
+
+profiledata$QUALIFICATION[profiledata$QUALIFICATION.other. == 'Mag.'] <- "Master"
+profiledata$Qual_fac <- factor(profiledata$QUALIFICATION, levels = c("Bachelor", "Master",  "PhD", "Other"))
+
+##
+## prepare occupation ####
+##
+
+profiledata$OCCUPATION[profiledata$OCCUPATION.other. == 'Assistant Professor'] <- "Professor"
+
+profiledata$Occu_fac <- factor(profiledata$OCCUPATION, levels = c("Bachelor student", "Master student",  "Ph.D. student", "Post-doc", "Researcher", "(Senior) Lecturer", "Professor", "Other"))
+
 # Export/Import prepared data ####
 
 # the actual dataframe we'll be working with
 df_export <- subset(profiledata, select = c("QUALIFICATION", "QUALIFICATION.other.", "OCCUPATION", "OCCUPATION.other.", "DISCIPLINE", "experience.r", "interest.r", "PROGRAMMINGlangs", "Author", "Researcher", "User", "Tutor", "Student", "authorHOWMANYYEARS", "authorHOWMANYVIDEOS", "userHOWMANYYEARS", "userHOWMANYCOURSES", "studentHOWMANYYEARS", "studentHOWMANYCOURSE", "researchHOWMANYYEARS", "researchHOWMANYPUB", "tutorHOWMANYYEARS", "tutorHOWMANYCOURSES"))
 
+# the final dataframe for notebook
+df_export <-subset(profiledata, select = c("Qual_fac","Occu_fac","Author", "Researcher", "User", "Tutor", "Student"))
+
 # write to csv so we don't need to run above lines too often
-write.csv(df_export, "participant_profiles_anon_prepared.csv")
+#write.csv(df_export, "participant_profiles_anon_prepared.csv")
 
 # read from prepared csv
-#profiledata <- read.csv("data_profiles_prepared.csv")
+#profiledata <- read.csv("participant_profiles_anon_prepared.csv")
 
 #
 # Generate visualizations
 #
 
 # Qualification ####
-profiledata$QUALIFICATION[profiledata$QUALIFICATION.other. == 'Mag.'] <- "Master"
-profiledata$Qual_fac <- factor(profiledata$QUALIFICATION, levels = c("Bachelor", "Master",  "PhD", "Other"))
+#profiledata$QUALIFICATION[profiledata$QUALIFICATION.other. == 'Mag.'] <- "Master"
+#profiledata$Qual_fac <- factor(profiledata$QUALIFICATION, levels = c("Bachelor", "Master",  "PhD", "Other"))
 qual_table <- table(profiledata$Qual_fac)
 qual_table_prop <- prop.table(qual_table)
 
@@ -74,9 +92,9 @@ qual_table_prop
 
 # Occupation ####
 # clean data
-profiledata$OCCUPATION[profiledata$OCCUPATION.other. == 'Assistant Professor'] <- "Professor"
+#profiledata$OCCUPATION[profiledata$OCCUPATION.other. == 'Assistant Professor'] <- "Professor"
 
-profiledata$Occu_fac <- factor(profiledata$OCCUPATION, levels = c("Bachelor student", "Master student",  "Ph.D. student", "Post-doc", "Researcher", "(Senior) Lecturer", "Professor", "Other"))
+#profiledata$Occu_fac <- factor(profiledata$OCCUPATION, levels = c("Bachelor student", "Master student",  "Ph.D. student", "Post-doc", "Researcher", "(Senior) Lecturer", "Professor", "Other"))
 occu_table <- table(profiledata$Occu_fac)
 occu_table_prop <- round((prop.table(occu_table) * 100),2)
 
