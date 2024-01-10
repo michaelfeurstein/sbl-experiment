@@ -1441,7 +1441,7 @@ count_nopref <- dim(subset(dfr, preference=='nopref'))[1]
 Using exact binomial test, ignoring ties (tie = no difference). We only count 33 preferences for the key-value notation and 9 preferences for the controlled natural-language notation. For the record, we have 6 no preference selections (ties). For the binomial test we only count 33 as success and 33+9=42 as total, ignoring no preference.
 
 ```{r}
-binom_result <- binom.test(count_preferKV,(count_preferKV+count_preferNL), conf.level = 0.95, p = 0.5)
+binom_result <- binom.test(count_preferKV,(count_preferKV+count_preferNL), conf.level = 0.95, p = 0.5, alternative = "two.sided")
 ```
 
 [Report:]{.underline} An exact binomial test revealed a significant difference of personal preference towards the key-value notation (p = 0.0002715) with a probability of success of 0.786 and a 95 % confidence interval (0.632,0.897).
