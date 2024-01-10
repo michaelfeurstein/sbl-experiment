@@ -840,7 +840,7 @@ summary(model_seq_dur)
 From the above we can see that there is a period effect. Note that H0 refers to the period effect.
 
 | Parameter     | Estimate | Standard Error | T-Value | DF  | Prob Level | Reject H0 at α = 0.050? |
-|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+|---------------|----------|----------------|---------|-----|------------|-------------------------|
 | Period Effect | -0.35476 | 0.04728        | -7.504  | 46  | 1.61e-09   | Yes                     |
 
 [Report:]{.underline} The tests of fixed effects show a **significant period effect**. The test rejects the assumption of equal period effects at the 0.05 significance level (the actual probability level is 1.61e-09).
@@ -856,7 +856,7 @@ summary(model_int_dur)
 From the above output we can see that there is no carryover effect (the carryover effect is leveled out by design and this is hereby confirmed:
 
 | Parameter        | Estimate | Standard Error | T-Value | DF  | Prob Level | Reject H0 at α = 0.050? |
-|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+|------------------|----------|----------------|---------|-----|------------|-------------------------|
 | Carryover Effect | -0.09427 | 0.19557        | -0.482  | 46  | 0.63210    | No                      |
 
 [Report:]{.underline} The tests of fixed effects show **no significant carryover effect**. The test failed to reject the assumption of equal carryover effects at the 0.05 significance level (the actual probability level is 0.63210).
@@ -864,7 +864,7 @@ From the above output we can see that there is no carryover effect (the carryove
 [**Treatment Effect: Duration**]{.underline}
 
 | Alternative Hypothesis | Mean Difference in percent | Standard Error | T-Value | DF  | Prob Level | Reject H0 at α = 0.050? |
-|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+|------------------------|----------------------------|----------------|---------|-----|------------|-------------------------|
 | μCNL - μKV ≠ 0         | 29.46605                   | 0.04728        | 5.690   | 46  | 8.42e-07   | Yes                     |
 
 Report: The two treatment means are significantly different based on the reported fixed effects in the linear mixed model at the 0.05 significance level (the actual probability level was 8.42e-07).
@@ -1060,7 +1060,7 @@ summary(model_seq_acc)
 From the above we can see that there is no period effect. Note that H0 refers to the period effect.
 
 | Parameter     | Estimate | Standard Error | T-Value | DF  | Prob Level | Reject H0 at α = 0.050? |
-|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+|---------------|----------|----------------|---------|-----|------------|-------------------------|
 | Period Effect | 3.305    | 5.005          | 0.660   | 46  | 0.5124     | No                      |
 
 [Report:]{.underline} The tests of fixed effects show a **no significant period effect**. The test fails to reject the assumption of equal period effects at the 0.05 significance level (the actual probability level is 0.5124).
@@ -1076,7 +1076,7 @@ summary(model_int_acc)
 From the above output we can see that there is no carryover effect (the carryover effect is leveled out by design and this is hereby confirmed:
 
 | Parameter        | Estimate | Standard Error | T-Value | DF  | Prob Level | Reject H0 at α = 0.050? |
-|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+|------------------|----------|----------------|---------|-----|------------|-------------------------|
 | Carryover Effect | 23.170   | 12.555         | 1.845   | 46  | 0.0714     | No                      |
 
 [Report:]{.underline} The tests of fixed effects show **no significant carryover effect**. The test failed to reject the assumption of equal carryover effects at the 0.05 significance level (the actual probability level is 0.0714).
@@ -1084,7 +1084,7 @@ From the above output we can see that there is no carryover effect (the carryove
 [**Treatment Effect: Duration**]{.underline}
 
 | Alternative Hypothesis | Mean Difference in percent | Standard Error | T-Value | DF  | Prob Level | Reject H0 at α = 0.050? |
-|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+|------------------------|----------------------------|----------------|---------|-----|------------|-------------------------|
 | μCNL - μKV ≠ 0         | -3.774                     | 5.005          | -0.754  | 46  | 0.4546     | No                      |
 
 Report: The two treatment means are not significantly different based on the reported fixed effects in the linear mixed model at the 0.05 significance level (the actual probability level was 0.4546).
@@ -1225,7 +1225,7 @@ summary(model_seq_sus)
 From the above we can see that there is a period effect. Note that H0 refers to the period effect.
 
 | Parameter     | Estimate  | Standard Error | T-Value | DF  | Prob Level | Reject H0 at α = 0.050? |
-|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+|---------------|-----------|----------------|---------|-----|------------|-------------------------|
 | Period Effect | -76737.05 | 27193.34       | -2.822  | 46  | 0.007027   | Yes                     |
 
 [Report:]{.underline} The tests of fixed effects show a **significant period effect**. The test rejects the assumption of equal period effects at the 0.05 significance level (the actual probability level is 0.007027).
@@ -1241,7 +1241,7 @@ summary(model_int_sus)
 From the above output we can see that there is no carryover effect (the carryover effect is leveled out by design and this is hereby confirmed:
 
 | Parameter        | Estimate   | Standard Error | T-Value | DF  | Prob Level | Reject H0 at α = 0.050? |
-|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+|------------------|------------|----------------|---------|-----|------------|-------------------------|
 | Carryover Effect | -128398.99 | 93635.16       | -1.371  | 46  | 0.177      | No                      |
 
 [Report:]{.underline} The tests of fixed effects show **no significant carryover effect**. The test failed to reject the assumption of equal carryover effects at the 0.05 significance level (the actual probability level is 0.177).
@@ -1249,7 +1249,7 @@ From the above output we can see that there is no carryover effect (the carryove
 [**Treatment Effect: Usability**]{.underline}
 
 | Alternative Hypothesis | Mean Difference in percent | Standard Error | T-Value | DF  | Prob Level | Reject H0 at α = 0.050? |
-|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+|------------------------|----------------------------|----------------|---------|-----|------------|-------------------------|
 | μCNL - μKV ≠ 0         | -110224.16                 | 27193.34       | -4.053  | 46  | 0.000193   | Yes                     |
 
 Report: The two treatment means are significantly different based on the reported fixed effects in the linear mixed model at the 0.05 significance level (the actual probability level was 0.000193).
@@ -1445,6 +1445,8 @@ binom_result <- binom.test(count_preferKV,(count_preferKV+count_preferNL), conf.
 ```
 
 [Report:]{.underline} An exact binomial test revealed a significant difference of personal preference towards the key-value notation (p = 0.0002715) with a probability of success of 0.786 and a 95 % confidence interval (0.632,0.897).
+
+Reporting results for binomial test based on [statistics.leard.com](https://statistics.laerd.com/spss-tutorials/binomial-test-using-spss-statistics.php)
 
 **Plotting of confidence interval**
 
