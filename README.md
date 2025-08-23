@@ -1,19 +1,14 @@
-## Cross-Over Analysis
+**Replication Package for Controlled Experiment**
 
-![Cross-Over Analysis](/cross-over-analysis.png)  
-*Figure 1: Cross-over analysis: Sequence Effect and Treatment Effect*
+Steps to replicate results & plots:
 
-Both t-tests on sequence and notation return no significant differences in means (mean_duration).  
-Welch Two Sample t-test  
-data: mean_duration by sequence  
-p-value = 0.9047  
+(0) Sample size calculation including power analysis [samplesize.R](samplesize/samplesize.R)
 
-Welch Two Sample t-test  
-data: mean_duration by notation.r  
-p-value = 0.4056  
+(1) Assignment of participants to sequence groupds using block randomization [randomization.R](randomization/randomization.R)
 
-Null Hypothesis: there is a significant difference in means between NL-KV / KV-NL sequences --> this means there is a carry over effect (use only period 1)  
-Alternative Hypothesis: there is no significant difference in means between NL-KV / KV-NL sequences --> this means there is NO carry over effect (use both periods)  
-p-value > 0.05 shows that there is no significant difference in means (mean_duration) between NL-KV and KV-NL sequence
+(2) Sanity check analyis steps by replicating and validating known values from similar experiment/data: [](validation/chowliu73)
+- Reference: [NCSS Analysis of 2x2 Cross Over Designs](https://www.ncss.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Analysis_of_2x2_Cross-Over_Designs_using_T-Tests.pdf)
 
-Interpretation from plot and t-tests would be that there seems to be a period effect, no carry-over or sequence effect as treatment duration differences are not significantly different for both periods.
+(3) Data preparation
+
+(4) Data analysis
