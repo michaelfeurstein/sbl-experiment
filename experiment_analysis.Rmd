@@ -26,11 +26,13 @@ We need several libraries for our analysis. Library ***dplyr*** is mainly used f
 
 ### Libraries
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 library(tidyr)
 library(dplyr)
 library(ggplot2)
 library(ggpubr)
+library(forcats)
+library(ggtext)
 library(lme4)
 library(multcomp)
 library(effectsize)
@@ -40,47 +42,41 @@ library(lemon)
 library(stringr)
 library(sensR)
 library(report)
+if(!require(likert)){install.packages("likert")}
+library(likert)
 ```
 
 ### Load Data
 
-Transformations and other preparation steps can be found in the [analysis.R](https://github.com/michaelfeurstein/sbl-experiment/blob/main/analysis.R) file. Here we simply load the already prepared data for the actual analysis steps performed.
+Preparation steps can be found in [preparation.R](https://github.com/michaelfeurstein/sbl-experiment/blob/main/data_preparation/preparation.R) file. Note that some csv file were prepared manually in Excel. Reason for this was simply me being a novice in doing analysis preparation steps.
 
-The following imported file named ***"data_prepared.csv"*** contains all main measurements (duration, accuracy, sus-score).
+File: ***01_main_data_prepared.csv*** - contains all main measurements (time, accuracy, sus-score, ranking).
+```{r}
+# read from prepared csv
+df <- read.csv("data_prepared/01_main_data_prepared.csv")
+```
+
+File: ***02_accuracy_features_flat_prepared.csv*** - contains all detailed measurements of the feature accuracy (1st part of the calculation for accuracy).
 
 ```{r}
 # read from prepared csv
-df <- read.csv("data_prepared.csv")
+f_data <- read.csv("data_prepared/02_accuracy_features_flat_prepared.csv")
 ```
 
-The following is ***participant_profiles_anon_prepared.csv*** contains all anonymized data on participants and their profile (programming experience, programming interest, qualification etc.)
+File: ***03_accuracy_quality_flat_prepared.csv*** - contains all detailed measurements of the quality accuracy (2nd part of the calculation for accuracy).
 
 ```{r}
 # read from prepared csv
-profiledata <- read.csv("participant_profiles_anon_prepared.csv")
+q_data <- read.csv("data_prepared/03_accuracy_quality_flat_prepared.csv")
 ```
 
-The following imported file named ***"accuracy_features_flat_prepared.csv"*** contains all detailed measurements of the feature accuracy (1st part of the calculation for accuracy).
-
-```{r}
-# read from prepared csv
-f_data <- read.csv("accuracy_features_flat_prepared.csv")
-```
-
-The following imported file named ***"accuracy_quality_flat_prepared.csv"*** contains all detailed measurements of the quality accuracy (2nd part of the calculation for accuracy).
-
-```{r}
-# read from prepared csv
-q_data <- read.csv("accuracy_quality_flat_prepared.csv")
-```
-
-The following imported files named ***"sus_cnl_likert_tidy.csv"*** and ***"sus_kv_likert_tidy.csv"*** contain the Likert responses from the Standardized System Usability Scale (SUS). Note that these values are **NOT** to be confused with the calculated SUS scores. These are the 5-point Likert responses ranging from Strongly Disagree to Strongly Agree.
+The following files  ***04_sus_cnl_likert_tidy.csv*** and ***05_sus_kv_likert_tidy.csv*** contain the Likert responses from the Standardized System Usability Scale (SUS). Note that these values are **NOT** to be confused with the calculated SUS scores. These are the 5-point Likert responses ranging from Strongly Disagree to Strongly Agree.
 
 Importing CNL SUS responses
 
 ```{r}
 # read CNL SUS responses from prepared tidy csv
-sus_cnl_data_tidy <- read.csv("sus_details/sus_cnl_likert_tidy.csv")
+sus_cnl_data_tidy <- read.csv("data_prepared/04_sus_cnl_likert_tidy.csv")
 # remove the imported X column - we don't need it. It was created during write.csv process
 sus_cnl_data_tidy <- subset(sus_cnl_data_tidy, select = -c(X))
 ```
@@ -89,20 +85,49 @@ Importing KV SUS responses
 
 ```{r}
 # read KV SUS responses from prepared tidy csv
-sus_kv_data_tidy <- read.csv("sus_details/sus_kv_likert_tidy.csv")
+sus_kv_data_tidy <- read.csv("data_prepared/05_sus_kv_likert_tidy.csv")
 # remove the imported X column - we don't need it. It was created during write.csv process
 sus_kv_data_tidy <- subset(sus_kv_data_tidy, select = -c(X))
 ```
 
-The following imported file named ***"ranking_preference.csv"*** contains the personal preference for a specific notation (CNL, KV or no preference). If a participant specified "don't know" or ranked both notations on the same level (1st or 2nd rank) the data point was converted to no preference.
+
+File: ***06_participant_profiles_anon_prepared.csv*** - contains all anonymized data on participants and their profile (programming experience, programming interest, qualification etc.)
 
 ```{r}
-dfr <- read.csv("ranking_preference.csv", sep = ";", dec = ",", header = TRUE)
+# read from prepared csv
+#profiledata <- read.csv("data_prepared/06_participant_profiles_anon_prepared.csv")
+profiledata <- read.csv("data_prepared/06_participant_profiles_prepared.csv")
+```
+
+
+File: ***07_data-experiment-ranking_prepared.csv*** - contains the personal preference for a specific notation (CNL, KV or no preference). If a participant specified "don't know" or ranked both notations on the same level (1st or 2nd rank) the data point was converted to no preference.
+
+```{r}
+# keep dfr for reference (used for bar chart)
+#dfr <- read.csv("ranking_preference.csv", sep = ";", dec = ",", header = TRUE)
+# ranking prepared (used for stacked bar chart)
+dfr_new <- read.csv("data_prepared/07_data-experiment-ranking_prepared.csv")
+# remove the imported X column - we don't need it. It was created during write.csv process
+dfr_new <- subset(dfr_new, select = -c(X))
+```
+
+File: ***08_data-experiment-exit_prepared.csv*** - contains exit questions
+```{r}
+# read from prepared csv
+posthocdata <- read.csv("data_prepared/08_data-experiment-exit_prepared.csv")
+posthocdata <- subset(posthocdata, select = -c(X))
+```
+
+File: ***09_data-comments_prepared.csv*** - contains exit questions
+```{r}
+# read from prepared csv
+comments <- read.csv("data_prepared/09_data-comments_prepared.csv")
+comments <- subset(comments, select = -c(X))
 ```
 
 ## Descriptive Statistics
 
-The following steps are in line with the chronological order of Chapter 6, Section 6.3.1 Descriptive Statistics.
+The following steps are in line with the chronological order of Figures included in Chapter 6, Section 6.3.1 Descriptive Statistics.
 
 ### Participants
 
@@ -122,42 +147,136 @@ qual_table_prop
 #### Occupation
 
 ```{r}
-occu_table <- table(profiledata$Occu_fac)
-occu_table_prop <- round((prop.table(occu_table) * 100),2)
+# fct_rev & fct_infreq: reverse order and order by frequency
+# expand = expansion(mult = c(0.02, .2)): left 2% right 20%
+participant_occupation <- ggplot(data = profiledata, aes(x =fct_rev(fct_infreq(Occu_fac)))) + 
+  geom_bar(fill = "grey", color = "black", width = 0.85) +
+  coord_flip() +
+  theme_classic2() +
+  theme(legend.position="none",
+        title = element_text(size = 18, colour = "black", face = "bold"),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text = element_text(size = 16, colour = "black"),
+        plot.margin = margin(0.3,0.3,0.3,0.3, "cm")) + 
+  scale_y_continuous(breaks=seq(0,11,by = 1), expand = expansion(mult = c(0.02, .2))) +
+  geom_text(
+      aes(label = scales::percent(after_stat(count)/sum(after_stat(count)) ) ),
+      stat="count", 
+      vjust = 0.5, size = 4.5, hjust = -0.2
+    ) +
+  labs(title = "Occupation of participants")
 
-# generate boxplot
-par(mar=c(3, 8, 3, 0))
-bp <- barplot(occu_table, main="Occupation",horiz=T , las=1, xlim=c(0,13))
-text(occu_table, bp,  occu_table_prop, labels = paste(occu_table_prop, '%'), pos = 4, cex = 0.8)
+# save
+ggsave(file="plots/participants_occupation.svg", plot=participant_occupation, width = 8, height = 6, dpi = 300)
+ ggsave(file="plots/participants_occupation.eps", plot=participant_occupation, width = 8, height = 6, dpi = 300)
+ggsave(file="plots/participants_occupation.png", plot=participant_occupation, width = 8, height = 6, dpi = 300)
+#print
+participant_occupation
 ```
+
+
 
 #### Profile
 
 ```{r}
-# Participant Profiles ####
-authors <- colSums(profiledata == "Yes")
-profile_columns = c("Profile","Frequency") 
-df_p = data.frame(matrix(nrow = 0, ncol = length(profile_columns))) 
-colnames(df_p) = profile_columns
-df_p[nrow(df_p) + 1,] = c("Author",authors["Author"])
-df_p[nrow(df_p) + 1,] = c("Researcher",authors["Researcher"])
-df_p[nrow(df_p) + 1,] = c("User",authors["User"])
-df_p[nrow(df_p) + 1,] = c("Tutor",authors["Tutor"])
-df_p[nrow(df_p) + 1,] = c("Student",authors["Student"])
+longer_profiledata <- pivot_longer(profiledata, cols = Author:Student) %>% filter(value == "Yes")
 
-# convert frequency column into numeric format
-df_p$Frequency = as.numeric(as.character(df_p$Frequency))
+participant_profiles <- ggplot(data = longer_profiledata, aes(fct_rev(fct_infreq(name)))) + 
+  geom_bar(stat = "count", fill = "grey", color = "black", width = 0.7) +
+  coord_flip() +
+  theme_classic2() +
+  theme(legend.position="none",
+        title = element_text(size = 18, colour = "black", face = "bold"),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text = element_text(size = 16, colour = "black"),
+        plot.margin = margin(0.3,0.3,0.3,0.3, "cm"),
+        aspect.ratio = 1/2) + 
+  scale_y_continuous(breaks=seq(0,25,by = 5), expand = expansion(mult = c(0.02, .1))) +
+  geom_text(
+      aes(label = after_stat(count)),
+      stat="count", 
+      vjust = 0.5, size = 4.5, hjust = -0.5
+    ) +
+  labs(title = "Profiles of participants")
 
-# order dataframe ascending
-# this way it's displayed descending in horizontal barplot
-desc_df_p <- df_p[order(df_p$Frequency),] 
-
-# plot barplot
-counts <- table(df_p$Frequency)
-par(mar=c(3, 6, 3, 1))
-profile_plot <- barplot(height=desc_df_p$Frequency, names=desc_df_p$Profile, main="Participant Profiles", horiz=T,las=1,xlim=c(0,25),width = c(2,2,2,2,2))
-text(x=desc_df_p$Frequency, profile_plot, labels = paste(desc_df_p$Frequency), pos=4, offset=0.3, xpd=T)
+# save
+ggsave(file="plots/participant_profiles.svg", plot=participant_profiles, width = 8, height = 6, dpi = 300)
+ggsave(file="plots/participant_profiles.eps", plot=participant_profiles, width = 8, height = 4, dpi = 300)
+ggsave(file="plots/participant_profiles.png", plot=participant_profiles, width = 8, height = 6, dpi = 300)
+#print
+participant_profiles
 ```
+
+#### Programming Experience
+
+```{r}
+experience <- subset(profiledata, select = c(experience.r))
+longer_experience <- experience %>% pivot_longer(everything(), values_to="Value", names_to="Variable")
+mapping <- c("No experience" = 0, "Beginner" = 1, "Regular" = 2, "Experienced" = 3, "Expert" = 4)
+longer_experience$Value <- mapping[longer_experience$Value]
+
+programming_experience <- ggplot(data = longer_experience, aes(x=Variable, y=Value)) + 
+  geom_boxplot(fill = "lightgrey") +
+  theme_classic2() +  
+  theme(legend.position="none",
+        title = element_text(size = 14, colour = "black", face = "bold"),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x.bottom = element_blank(),
+        axis.text = element_text(size = 12, colour = "black"),
+        panel.border = element_rect(colour = "black", fill=NA, linewidth=0),
+        axis.line.x.bottom = element_blank(),
+        plot.margin = margin(0.3,0.3,0.3,0.3, "cm"),
+        plot.title.position = "plot") + 
+  scale_y_continuous(breaks = c(0:4), labels = c("No experience", "Beginner", "Regular", "Experienced", "Expert")) +
+  labs(title = "Programming Experience")
+
+# save
+ggsave(file="plots/programming_experience.svg", plot=programming_experience, width = 3, height = 8, dpi = 300)
+ggsave(file="plots/programming_experience.eps", plot=programming_experience, units = "px", width = 1200, dpi = 300)
+ggsave(file="plots/programming_experience.png", plot=programming_experience, width = 3, height = 8, dpi = 300)
+#print
+programming_experience
+
+```
+
+#### Programming Interest
+
+```{r}
+interest <- subset(profiledata, select = c(interest.r))
+longer_interest <- interest %>% pivot_longer(everything(), values_to="Value", names_to="Variable")
+mapping <- c("Very low" = 0, "Low" = 1, "Relatively low" = 2, "relatively high" = 3, "High" = 4, "Very High" = 5)
+longer_interest$Value <- mapping[longer_interest$Value]
+
+programming_interest <- ggplot(data = longer_interest, aes(x=Variable, y=Value)) + 
+  geom_boxplot(fill = "lightgrey") +
+  theme_classic2() +  
+  theme(legend.position="none",
+        title = element_text(size = 14, colour = "black", face = "bold"),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x.bottom = element_blank(),
+        axis.text = element_text(size = 12, colour = "black"),
+        panel.border = element_rect(colour = "black", fill=NA, linewidth=0),
+        axis.line.x.bottom = element_blank(),
+        plot.margin = margin(0.3,0.3,0.3,0.3, "cm"),
+        plot.title.position = "plot",
+        aspect.ratio = 4/2) + 
+  scale_y_continuous(breaks = c(0:5), labels = c("Very Low", "Low", "Relatively Low", "Relatively High", "High", "Very High")) +
+  labs(title = "Programming Interest")
+
+# save
+ggsave(file="plots/programming_interest.svg", plot=programming_interest, width = 3, height = 6, dpi = 300)
+ggsave(file="plots/programming_interest.eps", plot=programming_interest, width = 3, height = 6, dpi = 300)
+ggsave(file="plots/programming_interest.png", plot=programming_interest, width = 3, height = 6, dpi = 300)
+#print
+programming_interest
+```
+
 
 ### Dependent Variables
 
@@ -458,6 +577,95 @@ b<-barplot(counts, main="Ranking (Personal Preference)",
 text(b, counts - 1.5, paste0(sprintf("%4.1f ", counts / sum(counts) * 100), "%", sprintf(" (%d)",counts)), font=1, col=c("black"), cex = 0.9)
 ```
 
+**Stacked Barplot:**
+
+```{r}
+counts_CNL <- count(dfr_new, ranking.CNL)
+counts_KV <- count(dfr_new, ranking.KV)
+
+notation <- c(rep(c("CNL"),3),rep(c("KV"),3))
+ranking <- rep(c("1st place","2nd place","no preference"), 2)  
+counts <- c(counts_CNL$n[1:3],counts_KV$n[1:3])
+data_ranking <- data.frame(notation,ranking,counts)
+
+desired_order <- c("KV","CNL")
+# Re-order the levels
+data_ranking$notation <- factor( as.character(data_ranking$notation), levels=desired_order )
+
+# Stacked + count inside bars
+experiment_ranking_stacked <- ggplot(data_ranking, aes(fill=ranking, y=counts, x=notation)) + 
+  geom_bar(position="fill", stat = "identity") +
+  geom_text(aes(label=after_stat(counts)), stat="identity", position="fill", vjust = 1.2, size = 3.5) +
+  scale_y_continuous(labels = scales::label_percent(scale = 48, prefix = "", suffix = "")) +
+  labs(title = "Personal Ranking of Notations", subtitle = "Ranking based on personal preference for notation", x = "Notation", y = "Counts", fill = "Ranking", caption = "1st place: the notation you could imagine working with and formulating storyboards with.\n2nd place: the notation you could NOT imagine working with.\nno preference: If you cannot decide, or are unsure.") +
+  theme_bw()
+
+# save
+ggsave(file="plots/experiment_ranking_stacked.svg", plot=experiment_ranking_stacked, width = 9, height = 6)
+ggsave(file="plots/experiment_ranking_stacked.eps", plot=experiment_ranking_stacked, width = 9, height = 6)
+#print
+experiment_ranking_stacked
+```
+
+### Exit Questions
+
+The following questions were asked after assessing the perceived usability for all three notations.
+
+Preparing for likert plotting
+```{r}
+# get the sums of each column with likert levels
+strong_disagree <- colSums(posthocdata == "1")
+strong_disagree <- as.data.frame(strong_disagree)
+
+disagree <- colSums(posthocdata == "2")
+disagree <- as.data.frame(disagree)
+
+neutral <- colSums(posthocdata == "3")
+neutral <- as.data.frame(neutral)
+
+agree <- colSums(posthocdata == "4")
+agree <- as.data.frame(agree)
+
+strong_agree <- colSums(posthocdata == "5")
+strong_agree <- as.data.frame(strong_agree)
+```
+
+
+#### Questions 1-4
+
+```{r, fig.width=7,fig.height=5}
+# setup 
+col_titles = c("Item","Strong Disagree","Disagree","Neutral","Agree","Strong Agree")
+df_posthoc_all = data.frame(matrix(nrow = 0, ncol = length(col_titles))) 
+colnames(df_posthoc_all) = col_titles
+
+# fill
+df_posthoc_all[1, ] <- c("Q1",strong_disagree[4,],disagree[4,],neutral[4,],agree[4,],strong_agree[4,])
+df_posthoc_all[2, ] <- c("Q2",strong_disagree[5,],disagree[5,],neutral[5,],agree[5,],strong_agree[5,])
+df_posthoc_all[3, ] <- c("Q3",strong_disagree[6,],disagree[6,],neutral[6,],agree[6,],strong_agree[6,])
+df_posthoc_all[4, ] <- c("Q4",strong_disagree[7,],disagree[7,],neutral[7,],agree[7,],strong_agree[7,])
+
+# convert to numeric
+i <- c(2:6)  
+df_posthoc_all[, i] <- apply(df_posthoc_all[, i], 2, function(x) as.numeric(as.character(x)))
+#sapply(df_posthoc_all, mode)
+
+# plot
+title <- "Exit Questions"
+q1_plot <- plot(likert(summary = df_posthoc_all), group.order = c("Q1", "Q2", "Q3", "Q4")) +
+  labs(title = title, y = "Percentage", caption = "<b>Q1 Efficiency:</b> Do you agree with the statement that a text-based approach could be more efficient?<br><b>Q2 Effectiveness:</b> Do you agree with the statement that a text-based approach could be more effective?<br><b>Q3 Textual notation as a first step:</b> Could you imagine using a textual notation as a starting point to sketch out<br>the main structure of a learning module in order to continue editing in a graphical user interface (GUI)?<br><b>Q4 Textual notation combined with GUI:</b> Could you imagine using a textual notation in combination with<br>an editing environment in a graphical user interface (GUI), allowing you to refine and switch between<br>textual notation and GUI representation?") +
+  theme(plot.caption = element_markdown())
+
+#save in variable image to export to svg
+image=q1_plot
+#save
+ggsave(file="plots/exit_questions.svg", plot=image, width=7, height=5)
+ggsave(file="plots/exit_questions.eps", plot=image, width=7, height=5)
+# print  
+q1_plot
+```
+
+
 ## Results and Hypothesis Tests
 
 The following steps are in line with the chronological order of Chapter 6, Section 6.3.2 Results and Hypothesis Tests.
@@ -499,7 +707,7 @@ p2 %>%
 
 ### Tests of Normality
 
-#### Efficiency (Duration)
+#### Efficiency (Task-Completion Time)
 
 Two types of visual inspections (histograms and qq-plots) and one type of statistical test (Shapiro-Wilk Test).
 
@@ -978,7 +1186,10 @@ mean_dur_diff
 mean_dur_diff_lwr
 
 # Plotting Tukey HSD
-# Source: Stefan aov.html + http://sape.inf.usi.ch/quick-reference/ggplot2/geom_pointrange
+# Source: 
+# - Stefan aov.html
+# - http://sape.inf.usi.ch/quick-reference/ggplot2/geom_pointrange
+# - https://statisticsbyjim.com/hypothesis-testing/confidence-intervals-compare-means/ 
 
 # (1) using log transformed data
 duration_transformed_CI=data.frame(contrast="nl-kv", lower=mean_dur_diff_lwr, mean=mean_dur_diff, upper=mean_dur_diff_upr)
@@ -1430,10 +1641,10 @@ wilcox.test(df$sus.boxcox[df$notation.r == "natural language"],df$sus.boxcox[df$
 #### Ranking (Personal Preference)
 
 ```{r}
-# Count number of occurences in dfr for each ranking type
-count_preferKV <- dim(subset(dfr, preference=='preferKV'))[1]
-count_preferNL <- dim(subset(dfr, preference=='preferNL'))[1]
-count_nopref <- dim(subset(dfr, preference=='nopref'))[1]
+# using dfr_new
+count_preferKV <- dim(subset(dfr_new, ranking.KV=='1st place'))[1]
+count_preferNL <- dim(subset(dfr_new, ranking.CNL=='1st place'))[1]
+count_nopref <- dim(subset(dfr_new, ranking.KV=='no preference'))[1]
 ```
 
 ##### (1) Binomial Test
@@ -1444,7 +1655,7 @@ Using exact binomial test, ignoring ties (tie = no difference). We only count 33
 binom_result <- binom.test(count_preferKV,(count_preferKV+count_preferNL), conf.level = 0.95, p = 0.5, alternative = "two.sided")
 ```
 
-[Report:]{.underline} An exact binomial test revealed a significant difference of personal preference towards the key-value notation (p = 0.0002715) with a probability of success of 0.786 and a 95 % confidence interval (0.632,0.897).
+[Report:]{.underline} An exact binomial test revealed a significant difference of personal preference towards the key-value notation (p = 0.0003881) with a probability of success of 0.773 and a 95 % confidence interval (0.622,0.885).
 
 Reporting results for binomial test based on [statistics.leard.com](https://statistics.laerd.com/spss-tutorials/binomial-test-using-spss-statistics.php)
 
@@ -1458,84 +1669,30 @@ binom_upr_CI <- binom_result[["conf.int"]][2]
 
 binom_CI=data.frame(contrast="CNL-KV", lower=binom_lwr_CI, mean=binom_sucess, upper=binom_upr_CI)
 
-ggplot(data=binom_CI) +
+ci_difference_plot <- ggplot(data=binom_CI) +
   geom_bar(aes(x=contrast, y=mean-0.5), stat="identity", fill="lightblue", position = position_nudge(y = 0.5)) +
   geom_pointrange(mapping=aes(x=contrast, y=mean, ymin=lower, ymax=upper), size=1, color="black", fill="white", shape=22) +
   geom_hline(yintercept = 0.5, linetype="dotted") +
-  scale_y_continuous(limits=c(-1,2)) +
+  scale_y_continuous(limits=c(0,1)) +
   coord_flip() +
   ylab('Probability of success') +
   xlab('CNL-KV') + 
-  labs(title = "Exact Binomial Test", subtitle = "95% confidence interval", caption = expression("Note: Line of no effect is 0.5 at hypothesized probability of success (see H4"[null]*" = 0.5).")) + theme_bw() + theme(legend.position="none",
+  labs(title = "Exact Binomial Test for personal preference", subtitle = "95% confidence interval", caption = expression("Note: Line of no effect is 0.5 at hypothesized probability of success (see H4"[null]*" = 0.5).")) + theme_bw() + theme(legend.position="none",
                                      axis.title.x=element_text(size=12),
                                      axis.text.x=element_text(size=12),
                                      axis.title.y=element_blank(),
                                      axis.text.y=element_text(size=12))
+
+# save
+ggsave(file="plots/experiment_ranking_ci_difference.svg", plot=ci_difference_plot, width = 8, height = 2)
+ggsave(file="plots/experiment_ranking_ci_difference.eps", plot=ci_difference_plot, width = 8, height = 2)
+
+# save as png
+png(filename="plots/experiment_ranking_ci_difference.png", width = 800, height = 150)
+ci_difference_plot
+dev.off()
 ```
 
-##### (2) Pearson X2
-
-This is the second variant of testing the ranking. Also by ignoring ties. We have the dataframe dfr with 48 rankings as preferKV, preferNL and nopref. First we count each ranking. We explicitly decide against using identicality norms or placebo experiments, because there is a lack of such in the domain of empirical software engineering (compared to e.g. sensory research in food quality and preference). Here, we simply test for a directional effect.
-
-**Calculation of Pearson X2 statistic:**
-
-We are using the calculation illustrated in Christensen et al. (2014).
-
-```{r}
-# Calculate Pearson X2
-chi_expectedCounts <- ((count_preferKV + count_preferNL)/2)
-chi_directional_part1 <- ((count_preferKV - chi_expectedCounts)^2)/chi_expectedCounts
-chi_directional_part2 <- ((count_preferNL - chi_expectedCounts)^2)/chi_expectedCounts
-chiSquare_directional <- chi_directional_part1 + chi_directional_part2
-chiSquare_directional
-
-# Calculate p-value 
-p_chi <- pchisq(chiSquare_directional, df=1, lower.tail = FALSE)
-p_chi
-```
-
-[Report:]{.underline} A Pearson chi-square test for directional effect revealed a significant difference of personal preference towards the key-value notation (chi-square = 13.714, sqrt of chi-square = 3.703 p = 0.0002128294).
-
-##### (3) Thurstonian 2-AC Model
-
-This calculation is fully based on Christensen et al. (2012). The authors present a methodology to calculate estimates for the Thurstonian model for a 2-AC protocol. This is the only calculation that includes the no preference counts.
-
-"The 2-AC protocol is a 2-AFC protocol with a 'no difference' option and is technically identical to the paired preference test with a no-preference' option" (Christensen et al., 2014, p. 119)
-
-Christensen et al. (2012) also provide an implementation of the methodology with the R-package *sensR*. In the below source code we are using sensR with the *twoAC* function. See sensR for more details: [sensR.pdf](https://cran.r-project.org/web/packages/sensR/sensR.pdf) \| [twoACexamples.pdf](https://rdrr.io/cran/sensR/f/inst/doc/twoACexamples.pdf)
-
-This calculation is kept for reference and future analysis.
-
-```{r}
-# Format: e form ("prefer A", "no-preference", "preferB").
-fit <- twoAC(c(count_preferNL,count_nopref,count_preferKV))
-fit$coefficients[2]
-
-pr <- profile(fit, range = c(-1,2))
-confint(pr)[2]
-plot(pr)
-
-dprime_lwr_CI <- confint(pr)[1]
-dprime <- fit$coefficients[2]
-dprime_upr_CI <- confint(pr)[2]
-
-
-dprime_CI=data.frame(contrast="CNL-KV", lower=dprime_lwr_CI, mean=dprime, upper=dprime_upr_CI)
-
-ggplot(data=dprime_CI) +
-  geom_bar(aes(x=contrast, y=mean), stat="identity", fill="lightblue", position = position_nudge(y = 0)) +
-  geom_pointrange(mapping=aes(x=contrast, y=mean, ymin=lower, ymax=upper), size=1, color="black", fill="white", shape=22) +
-  geom_hline(yintercept = 0, linetype="dotted") +
-  scale_y_continuous(limits=c(-1,2)) +
-  coord_flip() +
-  ylab('d.prime') +
-  xlab('CNL-KV') + 
-  labs(title = "Estimation of the Thurstonian model for 2-AC protocl", subtitle = "95% confidence interval", caption = "Note: ...") + theme_bw() + theme(legend.position="none",
-                                     axis.title.x=element_text(size=12),
-                                     axis.text.x=element_text(size=12),
-                                     axis.title.y=element_blank(),
-                                     axis.text.y=element_text(size=12))
-```
 
 # References
 
