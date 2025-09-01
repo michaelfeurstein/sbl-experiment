@@ -706,6 +706,9 @@ abline(0, 0)
 
 ###### Tukey HSD ####
 
+# Sources
+# Confidence Interval plots: https://statisticsbyjim.com/hypothesis-testing/confidence-intervals-compare-means/
+
 model <- aov(sus~notation.r, data=df)
 summary(model)
 TukeyHSD(model, conf.level=.95)
