@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='216.00pt' height='576.00pt' viewBox='0 0 216.00 576.00'>
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHwyMTYuMDB8MC4wMHw1NzYuMDA='>
+    <rect x='0.00' y='0.00' width='216.00' height='576.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHwyMTYuMDB8MC4wMHw1NzYuMDA=)'>
+</g>
+<defs>
+  <clipPath id='cpMC4wMHwyMTYuMDB8MTUwLjk5fDQyNS4wMQ=='>
+    <rect x='0.00' y='150.99' width='216.00' height='274.02' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHwyMTYuMDB8MTUwLjk5fDQyNS4wMQ==)'>
+<rect x='0.00' y='150.99' width='216.00' height='274.02' style='stroke-width: 1.16; stroke: #FFFFFF; fill: #FFFFFF;' />
+</g>
+<g clip-path='url(#cpMC4wMHwyMTYuMDB8MC4wMHw1NzYuMDA=)'>
+</g>
+<defs>
+  <clipPath id='cpOTEuMjZ8MjA3LjUwfDE4MS4wNHw0MTMuNTE='>
+    <rect x='91.26' y='181.04' width='116.24' height='232.47' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpOTEuMjZ8MjA3LjUwfDE4MS4wNHw0MTMuNTE=)'>
+<rect x='91.26' y='181.04' width='116.24' height='232.47' style='stroke-width: 1.16; stroke: none; fill: #FFFFFF;' />
+<line x1='149.38' y1='297.28' x2='149.38' y2='191.61' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<line x1='149.38' y1='402.95' x2='149.38' y2='402.95' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polygon points='113.05,297.28 113.05,402.95 185.70,402.95 185.70,297.28 113.05,297.28 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt; stroke-linejoin: miter; fill: #D3D3D3;' />
+<line x1='113.05' y1='323.70' x2='185.70' y2='323.70' style='stroke-width: 2.13; stroke: #333333; stroke-linecap: butt; stroke-linejoin: miter;' />
+<rect x='91.26' y='181.04' width='116.24' height='232.47' style='stroke-width: 0.00;' />
+</g>
+<g clip-path='url(#cpMC4wMHwyMTYuMDB8MC4wMHw1NzYuMDA=)'>
+<polyline points='91.26,413.51 91.26,181.04 ' style='stroke-width: 1.16; stroke-linecap: butt;' />
+<text x='85.88' y='407.25' text-anchor='end' style='font-size: 12.00px; font-family: "Arial";' textLength='77.38px' lengthAdjust='spacingAndGlyphs'>No experience</text>
+<text x='85.88' y='354.41' text-anchor='end' style='font-size: 12.00px; font-family: "Arial";' textLength='48.03px' lengthAdjust='spacingAndGlyphs'>Beginner</text>
+<text x='85.88' y='301.58' text-anchor='end' style='font-size: 12.00px; font-family: "Arial";' textLength='42.03px' lengthAdjust='spacingAndGlyphs'>Regular</text>
+<text x='85.88' y='248.74' text-anchor='end' style='font-size: 12.00px; font-family: "Arial";' textLength='66.70px' lengthAdjust='spacingAndGlyphs'>Experienced</text>
+<text x='85.88' y='195.91' text-anchor='end' style='font-size: 12.00px; font-family: "Arial";' textLength='34.67px' lengthAdjust='spacingAndGlyphs'>Expert</text>
+<polyline points='88.27,402.95 91.26,402.95 ' style='stroke-width: 1.16; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='88.27,350.11 91.26,350.11 ' style='stroke-width: 1.16; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='88.27,297.28 91.26,297.28 ' style='stroke-width: 1.16; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='88.27,244.44 91.26,244.44 ' style='stroke-width: 1.16; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='88.27,191.61 91.26,191.61 ' style='stroke-width: 1.16; stroke: #333333; stroke-linecap: butt;' />
+<text x='8.50' y='171.53' style='font-size: 16.80px; font-weight: bold; font-family: "Arial";' textLength='203.55px' lengthAdjust='spacingAndGlyphs'>Programming Experience</text>
+</g>
+</g>
+</svg>
