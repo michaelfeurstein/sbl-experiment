@@ -156,12 +156,12 @@ plot_power(design.accuracy.juhnke, max_n = 100, desired_power = 80)
 plot_power(design.accuracy.juhnke, max_n = 100, desired_power = 90)
 
 #### SUS scores ####
-##### questionnaire data ####
-# pretest data not sufficient, therefore using questionnaire data
+##### survey data ####
+# pretest data not sufficient, therefore using survey data
 design.sus.survey <- ANOVA_design(design = "2w",
                                   n = 55, 
-                                  mu <- c(49.68, 58),
-                                  sd <- c(18.22, 19.63),
+                                  mu <- c(56.32, 58),
+                                  sd <- c(21.14, 19.63),
                                   r = 0, 
                                   label_list = list("Notation" = c( "natural-language", "key-value")),
                                   plot = TRUE)
