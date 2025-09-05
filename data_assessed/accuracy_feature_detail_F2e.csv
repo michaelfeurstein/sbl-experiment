@@ -1,0 +1,33 @@
+survey.id,seed,subject,period,stratum,notation,experiment,a2.b.v ts,reason code
+18,53809797,6,1,"beginner, professional",nl,experiment32,0,missing assignment
+22,1543611468,10,1,"beginner, professional",nl,experiment45,0,spelling error
+24,1824038329,12,1,"beginner, professional",kv,experiment49,0,missing assignment
+26,648261524,14,2,"advanced, professional",nl,experiment59,0,missing assignment
+27,1137248348,16,2,"beginner, professional",kv,experiment63,0,spelling error
+28,1711638257,17,1,"advanced, professional",nl,experiment62,0,missing reference to video
+30,376903251,21,1,"advanced, professional",nl,experiment78,0,missing assignment
+33,724297500,24,1,"beginner, professional",kv,experiment89,0,missing assignment
+34,1198081260,25,1,"beginner, professional",kv,experiment88,0,other error
+31,78191451,27,1,"beginner, professional",nl,experiment101,0,other error
+31,78191451,27,2,"beginner, professional",kv,experiment102,0,missing assignment
+36,1785924739,28,2,"beginner, professional",nl,experiment108,0,other error
+35,118091000,33,1,"advanced, professional",nl,experiment120,0,wrong video reference
+12,1164639921,38,1,"beginner, student",kv,experiment141,0,missing assignment
+13,1810830370,41,1,"advanced, student",kv,experiment146,0,missing space
+13,1041534481,42,2,"beginner, student",kv,experiment153,0,spelling error
+14,163196166,43,1,"advanced, student",kv,experiment150,0,missing assignment
+14,1447529400,45,1,"beginner, student",nl,experiment156,0,singular plural bug
+15,268423740,49,1,"advanced, student",nl,experiment164,0,missing assignment
+15,268423740,49,2,"advanced, student",kv,experiment166,0,other error
+17,232371420,51,1,"beginner, student",nl,experiment172,0,missing assignment
+17,232371420,51,2,"beginner, student",kv,experiment174,0,other error
+18,1291581061,52,2,"beginner, student",kv,experiment176,0,spelling error
+40,1575895301,53,2,"beginner, professional",nl,experiment178,0,singular plural bug
+19,513903045,55,1,"beginner, student",nl,experiment179,0,missing space
+20,1427495181,56,1,"beginner, student",kv,experiment183,0,missing space
+21,1683434469,58,1,"advanced, student",nl,experiment189,0,other error
+21,1683434469,58,2,"advanced, student",kv,experiment190,0,other error
+22,1886580016,59,1,"advanced, student",nl,experiment191,0,missing assignment
+23,413387114,60,1,"beginner, student",nl,experiment193,0,singular plural bug
+24,622435986,62,1,"advanced, student",nl,experiment199,0,other error
+23,752975415,65,2,"advanced, student",nl,experiment209,0,singular plural bug
