@@ -11,4 +11,4 @@ Steps to replicate results & plots:
 
 (3) Data preparation: [preparation.R](data_preparation/preparation.R)
 
-(4) Data analysis: [analysis.R](analysis.R)
+(4) Data analysis: [R Notebook](experiment_analysis.Rmd)
